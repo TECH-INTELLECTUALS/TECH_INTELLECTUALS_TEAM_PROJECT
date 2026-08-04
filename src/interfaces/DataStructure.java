@@ -29,4 +29,8 @@ public interface DataStructure<T> {
      * @return true if empty, false otherwise
      */
     boolean isEmpty();
+
+    T get(int index);
+    
+    void set(int index, T item);
 }
