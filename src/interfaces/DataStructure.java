@@ -1,4 +1,4 @@
-﻿package interfaces;
+package interfaces;
 
 /**
  * Base interface for custom core data structures.

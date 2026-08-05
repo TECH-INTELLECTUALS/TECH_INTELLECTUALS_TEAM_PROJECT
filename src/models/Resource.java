@@ -1,4 +1,4 @@
-﻿package models;
+package models;
 
 /**
  * Represents movable or consumable campus resources.

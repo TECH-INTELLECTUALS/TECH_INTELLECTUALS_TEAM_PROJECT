@@ -1,4 +1,4 @@
-﻿package controllers;
+package controllers;
 
 /**
  * Controller placeholder for coordinating campus service operations.

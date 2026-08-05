@@ -1,4 +1,4 @@
-﻿package exceptions;
+package exceptions;
 
 /**
  * Thrown when a duplicate record is detected during persistence.

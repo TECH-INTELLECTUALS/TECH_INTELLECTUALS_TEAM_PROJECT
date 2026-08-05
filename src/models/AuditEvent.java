@@ -1,4 +1,4 @@
-﻿package models;
+package models;
 
 /**
  * Represents a system audit trail event.
