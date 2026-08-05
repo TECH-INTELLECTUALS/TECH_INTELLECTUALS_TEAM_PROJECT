@@ -79,7 +79,8 @@ public class DatabaseManager {
                     algorithm_run_id INTEGER PRIMARY KEY,
                     algorithm_name TEXT NOT NULL,
                     input_size INTEGER,
-                    execution_time_ms INTEGER,
+                    execution_time_ns INTEGER,
+                    memory_kb INTEGER,
                     result_summary TEXT,
                     timestamp TEXT
                 );
