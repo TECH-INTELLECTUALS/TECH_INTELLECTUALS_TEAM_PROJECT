@@ -1,9 +1,59 @@
 ﻿package models;
 
-/**
- * Represents a campus location such as a building, lab, hostel or shuttle stop.
- */
 public class Location {
 
-    // TODO: Define location properties such as identifier, name, and coordinates
+    private int locationId;
+    private String name;
+    private String area;
+    private String locationType;
+    private double xCoord;
+    private double yCoord;
+
+
+    public Location(
+            int locationId,
+            String name,
+            String area,
+            String locationType,
+            double xCoord,
+            double yCoord
+    ){
+
+        this.locationId = locationId;
+        this.name = name;
+        this.area = area;
+        this.locationType = locationType;
+        this.xCoord = xCoord;
+        this.yCoord = yCoord;
+    }
+
+
+    public int getLocationId(){
+        return locationId;
+    }
+
+
+    public String getName(){
+        return name;
+    }
+
+
+    public String getArea(){
+        return area;
+    }
+
+
+    public String getLocationType(){
+        return locationType;
+    }
+
+
+    public double getXCoord(){
+        return xCoord;
+    }
+
+
+    public double getYCoord(){
+        return yCoord;
+    }
 }
