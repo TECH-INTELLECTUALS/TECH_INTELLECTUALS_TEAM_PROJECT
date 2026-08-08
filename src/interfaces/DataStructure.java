@@ -1,4 +1,4 @@
-﻿package interfaces;
+package interfaces;
 
 /**
  * Base interface for custom core data structures.
@@ -34,3 +34,4 @@ public interface DataStructure<T> {
     
     void set(int index, T item);
 }
+
