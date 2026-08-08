@@ -3,17 +3,32 @@
 import interfaces.DataStructure;
 
 /**
- * Custom hash table placeholder for fast lookup operations.
- * @param <K> key type
- * @param <V> value type
+ * Custom hash table implementation using separate chaining.
+ * Keys are Strings, Values are generic type T.
+ * 
+ * @param <T> value type
  */
-public class HashTable<K, V> implements DataStructure<V> {
+public class HashTable<T> implements DataStructure<T> {
     
     private static final int DEFAULT_CAPACITY = 16;
     private static final float LOAD_FACTOR = 0.75f;
     
-    private Entry<K, V>[] table;
+    private Entry<T>[] table;
     private int size;
+    
+    /**
+     * Inner class representing a node in the linked list chain.
+     */
+    private static class Entry<T> {
+        String key;
+        T value;
+        Entry<T> next;
+        
+        Entry(String key, T value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
     
     @SuppressWarnings("unchecked")
     public HashTable() {
@@ -22,37 +37,24 @@ public class HashTable<K, V> implements DataStructure<V> {
     }
     
     /**
-     * Inner class representing a key-value pair in the hash table
+     * Computes hash code for a given key.
+     * Uses bitwise AND to prevent Integer.MIN_VALUE bug.
      */
-    private static class Entry<K, V> {
-        K key;
-        V value;
-        Entry<K, V> next;
-        
-        Entry(K key, V value) {
-            this.key = key;
-            this.value = value;
-        }
-    }
-    
-    /**
-     * Computes hash code for a given key
-     */
-    private int hash(K key) {
+    private int hash(String key) {
         if (key == null) return 0;
-        return Math.abs(key.hashCode()) % table.length;
+        return (key.hashCode() & 0x7fffffff) % table.length;
     }
     
     /**
-     * Resizes the table when load factor is exceeded
+     * Resizes the table when load factor is exceeded.
      */
     @SuppressWarnings("unchecked")
     private void resize() {
-        Entry<K, V>[] oldTable = table;
+        Entry<T>[] oldTable = table;
         table = new Entry[oldTable.length * 2];
-        size = 0;
+        size = 0; // Reset size as put() will increment it
         
-        for (Entry<K, V> entry : oldTable) {
+        for (Entry<T> entry : oldTable) {
             while (entry != null) {
                 put(entry.key, entry.value);
                 entry = entry.next;
@@ -61,81 +63,100 @@ public class HashTable<K, V> implements DataStructure<V> {
     }
     
     /**
-     * Adds a key-value pair to the hash table
+     * REQUIRED METHOD 1: Adds or updates a key-value pair.
      */
-    public void put(K key, V value) {
+    public void put(String key, T value) {
         if (size >= table.length * LOAD_FACTOR) {
             resize();
         }
         
         int index = hash(key);
-        Entry<K, V> entry = table[index];
+        Entry<T> curr = table[index];
         
-        // Check if key already exists
-        while (entry != null) {
-            if ((entry.key == null && key == null) || 
-                (entry.key != null && entry.key.equals(key))) {
-                entry.value = value;
+        // 1. Check if key already exists -> update value
+        while (curr != null) {
+            if ((curr.key == null && key == null) || (curr.key != null && curr.key.equals(key))) {
+                curr.value = value;
                 return;
             }
-            entry = entry.next;
+            curr = curr.next;
         }
         
-        // Add new entry at the beginning
-        Entry<K, V> newEntry = new Entry<>(key, value);
+        // 2. Key not found -> prepend new entry (O(1) insertion)
+        Entry<T> newEntry = new Entry<>(key, value);
         newEntry.next = table[index];
         table[index] = newEntry;
         size++;
     }
     
     /**
-     * Retrieves a value by key
+     * REQUIRED METHOD 2: Retrieves a value by key.
      */
-    public V get(K key) {
+    public T get(String key) {
         int index = hash(key);
-        Entry<K, V> entry = table[index];
+        Entry<T> curr = table[index];
         
-        while (entry != null) {
-            if ((entry.key == null && key == null) || 
-                (entry.key != null && entry.key.equals(key))) {
-                return entry.value;
+        while (curr != null) {
+            if ((curr.key == null && key == null) || (curr.key != null && curr.key.equals(key))) {
+                return curr.value;
             }
-            entry = entry.next;
+            curr = curr.next;
         }
         
         return null;
     }
 
+    /**
+     * REQUIRED METHOD 3: Removes an item by KEY (Fast O(1) average).
+     * This is the method you should show in your demo!
+     */
+    public void remove(String key) {
+        int index = hash(key);
+        Entry<T> curr = table[index];
+        Entry<T> prev = null;
+        
+        while (curr != null) {
+            if ((curr.key == null && key == null) || (curr.key != null && curr.key.equals(key))) {
+                // Unlink the node
+                if (prev == null) {
+                    table[index] = curr.next; // Removing the head of the list
+                } else {
+                    prev.next = curr.next;    // Removing from middle or end
+                }
+                size--;
+                return;
+            }
+            prev = curr;
+            curr = curr.next;
+        }
+    }
+
+    // --- Interface Methods (DataStructure<T>) ---
+    // These are required to compile against the interface, but are secondary to the 3 methods above.
+
     @Override
-    public void add(V item) {
-        // For this implementation, you would need a key
-        // If implementing with just values, consider using a HashSet instead
-        throw new UnsupportedOperationException("Use put(K key, V value) instead");
+    public void add(T item) {
+        // A hash table requires a key to add an item.
+        throw new UnsupportedOperationException("Use put(key, value) instead.");
     }
 
     @Override
-    public void remove(V item) {
-        // TODO: Remove an item from the hash table
-        // Note: Removing by value requires iterating through all entries
+    public void remove(T item) {
+        // Note: This removes by VALUE, which is slow O(N).
+        // It is kept here only to satisfy the DataStructure interface contract.
         for (int i = 0; i < table.length; i++) {
-            Entry<K, V> entry = table[i];
-            Entry<K, V> prev = null;
+            Entry<T> curr = table[i];
+            Entry<T> prev = null;
             
-            while (entry != null) {
-                if ((entry.value == null && item == null) || 
-                    (entry.value != null && entry.value.equals(item))) {
-                    
-                    if (prev == null) {
-                        table[i] = entry.next;
-                    } else {
-                        prev.next = entry.next;
-                    }
+            while (curr != null) {
+                if ((curr.value == null && item == null) || (curr.value != null && curr.value.equals(item))) {
+                    if (prev == null) table[i] = curr.next;
+                    else prev.next = curr.next;
                     size--;
                     return;
                 }
-                
-                prev = entry;
-                entry = entry.next;
+                prev = curr;
+                curr = curr.next;
             }
         }
     }
@@ -148,5 +169,15 @@ public class HashTable<K, V> implements DataStructure<V> {
     @Override
     public boolean isEmpty() {
         return size == 0;
+    }
+
+    @Override
+    public T get(int index) {
+        throw new UnsupportedOperationException("Use get(key) instead for hash table access.");
+    }
+
+    @Override
+    public void set(int index, T value) {
+        throw new UnsupportedOperationException("Use put(key, value) instead for hash table access.");
     }
 }
