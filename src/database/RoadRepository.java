@@ -44,9 +44,9 @@ public class RoadRepository {
         Connection conn = databaseConnection.open();
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, road.getRoadId());
-            stmt.setInt(2, road.getFromLocationId());
-            stmt.setInt(3, road.getToLocationId());
+            stmt.setString(1, road.getRoadId());
+            stmt.setString(2, road.getFromLocationId());
+            stmt.setString(3, road.getToLocationId());
             stmt.setDouble(4, road.getDistanceKm());
             stmt.setDouble(5, road.getTravelTimeMin());
             stmt.setDouble(6, road.getConditionWeight());
@@ -143,9 +143,9 @@ public class RoadRepository {
 
     private Road mapRow(ResultSet rs) throws SQLException {
         return new Road(
-                rs.getInt("road_id"),
-                rs.getInt("from_location_id"),
-                rs.getInt("to_location_id"),
+                rs.getString("road_id"),
+                rs.getString("from_location_id"),
+                rs.getString("to_location_id"),
                 rs.getDouble("distance_km"),
                 rs.getDouble("travel_time_min"),
                 rs.getDouble("condition_weight")

@@ -1,26 +1,26 @@
-package models;
+﻿package models;
 
 /**
  * Encapsulates a service request submitted by students or staff.
  */
 public class ServiceRequest {
 
-    private int requestId;
-    private int sourceLocationId;
-    private int destinationLocationId;
+    private String requestId;
+    private String sourceLocationId;
+    private String destinationLocationId;
     private String category;
-    private String urgency;
+    private int urgency;
     private String timeSubmitted;
     private String deadline;
     private String status;
 
 
     public ServiceRequest(
-            int requestId,
-            int sourceLocationId,
-            int destinationLocationId,
+            String requestId,
+            String sourceLocationId,
+            String destinationLocationId,
             String category,
-            String urgency,
+            int urgency,
             String timeSubmitted,
             String deadline,
             String status
@@ -37,32 +37,32 @@ public class ServiceRequest {
     }
 
 
-    public int getRequestId() {
+    public String getRequestId() {
         return requestId;
     }
 
 
-    public void setRequestId(int requestId) {
+    public void setRequestId(String requestId) {
         this.requestId = requestId;
     }
 
 
-    public int getSourceLocationId() {
+    public String getSourceLocationId() {
         return sourceLocationId;
     }
 
 
-    public void setSourceLocationId(int sourceLocationId) {
+    public void setSourceLocationId(String sourceLocationId) {
         this.sourceLocationId = sourceLocationId;
     }
 
 
-    public int getDestinationLocationId() {
+    public String getDestinationLocationId() {
         return destinationLocationId;
     }
 
 
-    public void setDestinationLocationId(int destinationLocationId) {
+    public void setDestinationLocationId(String destinationLocationId) {
         this.destinationLocationId = destinationLocationId;
     }
 
@@ -77,12 +77,12 @@ public class ServiceRequest {
     }
 
 
-    public String getUrgency() {
+    public int getUrgency() {
         return urgency;
     }
 
 
-    public void setUrgency(String urgency) {
+    public void setUrgency(int urgency) {
         this.urgency = urgency;
     }
 

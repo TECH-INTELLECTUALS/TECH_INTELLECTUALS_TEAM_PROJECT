@@ -40,7 +40,7 @@ public class ResourceRepository {
         Connection conn = databaseConnection.open();
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, resource.getResourceId());
+            stmt.setString(1, resource.getResourceId());
             stmt.setString(2, resource.getResourceType());
             stmt.setInt(3, resource.getHomeLocationId());
             stmt.setInt(4, resource.getCapacity());
@@ -138,7 +138,7 @@ public class ResourceRepository {
 
     private Resource mapRow(ResultSet rs) throws SQLException {
         return new Resource(
-                rs.getInt("resource_id"),
+                rs.getString("resource_id"),
                 rs.getString("resource_type"),
                 rs.getInt("home_location_id"),
                 rs.getInt("capacity"),

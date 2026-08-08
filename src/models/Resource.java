@@ -1,11 +1,11 @@
-package models;
+﻿package models;
 
 /**
  * Represents movable or consumable campus resources.
  */
 public class Resource {
 
-    private int resourceId;
+    private String resourceId;
     private String resourceType;
     private int homeLocationId;
     private int capacity;
@@ -13,7 +13,7 @@ public class Resource {
 
 
     public Resource(
-            int resourceId,
+            String resourceId,
             String resourceType,
             int homeLocationId,
             int capacity,
@@ -28,12 +28,12 @@ public class Resource {
     }
 
 
-    public int getResourceId() {
+    public String getResourceId() {
         return resourceId;
     }
 
 
-    public void setResourceId(int resourceId) {
+    public void setResourceId(String resourceId) {
         this.resourceId = resourceId;
     }
 

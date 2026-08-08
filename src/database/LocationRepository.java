@@ -41,7 +41,7 @@ public class LocationRepository {
         Connection conn = databaseConnection.open();
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, location.getLocationId());
+            stmt.setString(1, location.getLocationId());
             stmt.setString(2, location.getName());
             stmt.setString(3, location.getArea());
             stmt.setString(4, location.getLocationType());
@@ -125,7 +125,7 @@ public class LocationRepository {
      */
     private Location mapRow(ResultSet rs) throws SQLException {
         return new Location(
-                rs.getInt("location_id"),
+                rs.getString("location_id"),
                 rs.getString("name"),
                 rs.getString("area"),
                 rs.getString("location_type"),

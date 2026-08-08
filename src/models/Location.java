@@ -1,8 +1,8 @@
-package models;
+﻿package models;
 
 public class Location {
 
-    private int locationId;
+    private String locationId;
     private String name;
     private String area;
     private String locationType;
@@ -11,7 +11,7 @@ public class Location {
 
 
     public Location(
-            int locationId,
+            String locationId,
             String name,
             String area,
             String locationType,
@@ -28,7 +28,7 @@ public class Location {
     }
 
 
-    public int getLocationId(){
+    public String getLocationId(){
         return locationId;
     }
 

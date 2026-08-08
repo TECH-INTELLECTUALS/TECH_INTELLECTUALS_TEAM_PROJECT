@@ -1,22 +1,22 @@
-package models;
+﻿package models;
 
 /**
  * Represents a connectivity link between two campus locations.
  */
 public class Road {
 
-    private int roadId;
-    private int fromLocationId;
-    private int toLocationId;
+    private String roadId;
+    private String fromLocationId;
+    private String toLocationId;
     private double distanceKm;
     private double travelTimeMin;
     private double conditionWeight;
 
 
     public Road(
-            int roadId,
-            int fromLocationId,
-            int toLocationId,
+            String roadId,
+            String fromLocationId,
+            String toLocationId,
             double distanceKm,
             double travelTimeMin,
             double conditionWeight
@@ -31,32 +31,32 @@ public class Road {
     }
 
 
-    public int getRoadId() {
+    public String getRoadId() {
         return roadId;
     }
 
 
-    public void setRoadId(int roadId) {
+    public void setRoadId(String roadId) {
         this.roadId = roadId;
     }
 
 
-    public int getFromLocationId() {
+    public String getFromLocationId() {
         return fromLocationId;
     }
 
 
-    public void setFromLocationId(int fromLocationId) {
+    public void setFromLocationId(String fromLocationId) {
         this.fromLocationId = fromLocationId;
     }
 
 
-    public int getToLocationId() {
+    public String getToLocationId() {
         return toLocationId;
     }
 
 
-    public void setToLocationId(int toLocationId) {
+    public void setToLocationId(String toLocationId) {
         this.toLocationId = toLocationId;
     }
 

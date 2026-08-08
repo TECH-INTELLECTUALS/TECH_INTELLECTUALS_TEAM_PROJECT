@@ -46,11 +46,11 @@ public class ServiceRequestRepository {
         Connection conn = databaseConnection.open();
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, request.getRequestId());
-            stmt.setInt(2, request.getSourceLocationId());
-            stmt.setInt(3, request.getDestinationLocationId());
+            stmt.setString(1, request.getRequestId());
+            stmt.setString(2, request.getSourceLocationId());
+            stmt.setString(3, request.getDestinationLocationId());
             stmt.setString(4, request.getCategory());
-            stmt.setString(5, request.getUrgency());
+            stmt.setInt(5, request.getUrgency());
             stmt.setString(6, request.getTimeSubmitted());
             stmt.setString(7, request.getDeadline());
             stmt.setString(8, request.getStatus());
@@ -172,11 +172,11 @@ public class ServiceRequestRepository {
 
     private ServiceRequest mapRow(ResultSet rs) throws SQLException {
         return new ServiceRequest(
-                rs.getInt("request_id"),
-                rs.getInt("source_location_id"),
-                rs.getInt("destination_location_id"),
+                rs.getString("request_id"),
+                rs.getString("source_location_id"),
+                rs.getString("destination_location_id"),
                 rs.getString("category"),
-                rs.getString("urgency"),
+                rs.getInt("urgency"),
                 rs.getString("time_submitted"),
                 rs.getString("deadline"),
                 rs.getString("status")
