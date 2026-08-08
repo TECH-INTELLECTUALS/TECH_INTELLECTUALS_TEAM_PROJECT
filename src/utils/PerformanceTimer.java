@@ -1,4 +1,4 @@
-﻿package utils;
+package utils;
 
 /**
  * Utility placeholder for measuring algorithm and service performance.

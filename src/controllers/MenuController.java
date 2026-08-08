@@ -1,4 +1,4 @@
-﻿package controllers;
+package controllers;
 
 /**
  * Controller placeholder for menu and interaction flows.

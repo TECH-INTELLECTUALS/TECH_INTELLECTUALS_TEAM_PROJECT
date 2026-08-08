@@ -1,4 +1,4 @@
-﻿package database;
+package database;
 
 /**
  * Manages database lifecycle and persistence orchestration.

@@ -1,4 +1,4 @@
-﻿package models;
+package models;
 
 /**
  * Encapsulates a service request submitted by students or staff.
