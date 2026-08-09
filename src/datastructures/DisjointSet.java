@@ -3,8 +3,6 @@ package datastructures;
 import interfaces.DataStructure;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Generic Disjoint Set / Union-Find data structure.
@@ -22,8 +20,11 @@ public class DisjointSet<T> implements DataStructure<T> {
     private int[] parent;
     private int[] rank;
 
-    // Maps actual elements to internal integer indices
-    private Map<T, Integer> indexMap;
+    // Maps actual elements to internal integer indices (item.toString() -> index)
+    private HashTable<Integer> indexMap;
+
+    // Maps internal integer indices back to actual elements (parallel to parent/rank)
+    private Object[] elements;
 
     private int size;
 
@@ -34,7 +35,8 @@ public class DisjointSet<T> implements DataStructure<T> {
     public DisjointSet() {
         parent = new int[16];
         rank = new int[16];
-        indexMap = new HashMap<>();
+        elements = new Object[16];
+        indexMap = new HashTable<>();
         size = 0;
     }
 
@@ -56,8 +58,9 @@ public class DisjointSet<T> implements DataStructure<T> {
 
         parent = new int[Math.max(n, 1)];
         rank = new int[Math.max(n, 1)];
+        elements = new Object[Math.max(n, 1)];
 
-        indexMap = new HashMap<>();
+        indexMap = new HashTable<>();
 
         for (int i = 0; i < n; i++) {
             parent[i] = i;
@@ -86,23 +89,16 @@ public class DisjointSet<T> implements DataStructure<T> {
     /**
      * Finds the representative element of a set.
      */
+    @SuppressWarnings("unchecked")
     public T find(T item) {
 
         checkExists(item);
 
-        int index = indexMap.get(item);
+        int index = indexMap.get(item.toString());
 
         int root = findIndex(index);
 
-        // Find the element that owns this root
-        for (Map.Entry<T, Integer> entry : indexMap.entrySet()) {
-
-            if (entry.getValue() == root) {
-                return entry.getKey();
-            }
-        }
-
-        return null;
+        return (T) elements[root];
     }
 
 
@@ -117,8 +113,8 @@ public class DisjointSet<T> implements DataStructure<T> {
         checkExists(item2);
 
 
-        int root1 = findIndex(indexMap.get(item1));
-        int root2 = findIndex(indexMap.get(item2));
+        int root1 = findIndex(indexMap.get(item1.toString()));
+        int root2 = findIndex(indexMap.get(item2.toString()));
 
 
         if (root1 == root2) {
@@ -151,9 +147,9 @@ public class DisjointSet<T> implements DataStructure<T> {
         checkExists(item1);
         checkExists(item2);
 
-        return findIndex(indexMap.get(item1))
+        return findIndex(indexMap.get(item1.toString()))
                 ==
-                findIndex(indexMap.get(item2));
+                findIndex(indexMap.get(item2.toString()));
     }
 
 
@@ -166,7 +162,7 @@ public class DisjointSet<T> implements DataStructure<T> {
     @Override
     public void add(T item) {
 
-        if (indexMap.containsKey(item)) {
+        if (indexMap.get(item.toString()) != null) {
             return;
         }
 
@@ -178,9 +174,10 @@ public class DisjointSet<T> implements DataStructure<T> {
 
         parent[size] = size;
         rank[size] = 0;
+        elements[size] = item;
 
 
-        indexMap.put(item, size);
+        indexMap.put(item.toString(), size);
 
         size++;
     }
@@ -228,8 +225,9 @@ public class DisjointSet<T> implements DataStructure<T> {
 
         parent = new int[16];
         rank = new int[16];
+        elements = new Object[16];
 
-        indexMap.clear();
+        indexMap = new HashTable<>();
 
         size = 0;
     }
@@ -252,6 +250,9 @@ public class DisjointSet<T> implements DataStructure<T> {
 
         rank =
                 Arrays.copyOf(rank, newCapacity);
+
+        elements =
+                Arrays.copyOf(elements, newCapacity);
     }
 
 
@@ -261,7 +262,7 @@ public class DisjointSet<T> implements DataStructure<T> {
      */
     private void checkExists(T item) {
 
-        if (!indexMap.containsKey(item)) {
+        if (indexMap.get(item.toString()) == null) {
 
             throw new IllegalArgumentException(
                     "Element does not exist: " + item
@@ -274,6 +275,7 @@ public class DisjointSet<T> implements DataStructure<T> {
      * Gets element at index.
      */
     @Override
+    @SuppressWarnings("unchecked")
     public T get(int index) {
 
         if (index < 0 || index >= size) {
@@ -282,13 +284,7 @@ public class DisjointSet<T> implements DataStructure<T> {
             );
         }
 
-        for (Map.Entry<T, Integer> entry : indexMap.entrySet()) {
-            if (entry.getValue() == index) {
-                return entry.getKey();
-            }
-        }
-
-        return null;
+        return (T) elements[index];
     }
 
 

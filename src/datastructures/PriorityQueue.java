@@ -4,7 +4,7 @@ import interfaces.DataStructure;
 
 /**
  * Custom priority queue implementation intended for scheduling and routing.
- * Uses a min-heap structure where lower priority values have higher priority.
+ * Uses a max-heap structure where higher priority values are dequeued first.
  * @param <T> element type (must implement Comparable or be used with a Comparator)
  */
 public class PriorityQueue<T extends Comparable<T>> implements DataStructure<T> {
@@ -34,7 +34,7 @@ public class PriorityQueue<T extends Comparable<T>> implements DataStructure<T> 
     
     @SuppressWarnings("unchecked")
     public PriorityQueue() {
-        heap = new Entry[DEFAULT_CAPACITY];
+        heap = (Entry[]) new Object[DEFAULT_CAPACITY];
         size = 0;
     }
     
@@ -74,7 +74,7 @@ public class PriorityQueue<T extends Comparable<T>> implements DataStructure<T> 
     @SuppressWarnings("unchecked")
     private void resize() {
         Entry[] oldHeap = heap;
-        heap = new Entry[oldHeap.length * 2];
+        heap = (Entry[]) new Object[oldHeap.length * 2];
         System.arraycopy(oldHeap, 0, heap, 0, oldHeap.length);
     }
     
@@ -82,7 +82,7 @@ public class PriorityQueue<T extends Comparable<T>> implements DataStructure<T> 
      * Moves an entry up the heap to maintain min-heap property
      */
     private void heapifyUp(int index) {
-        while (index > 0 && heap[index].compareTo(heap[parent(index)]) < 0) {
+        while (index > 0 && heap[index].compareTo(heap[parent(index)]) > 0) {
             swap(index, parent(index));
             index = parent(index);
         }
@@ -93,19 +93,16 @@ public class PriorityQueue<T extends Comparable<T>> implements DataStructure<T> 
      */
     private void heapifyDown(int index) {
         while (leftChild(index) < size) {
-            int smallerChild = leftChild(index);
-            
-            if (rightChild(index) < size && 
-                heap[rightChild(index)].compareTo(heap[smallerChild]) < 0) {
-                smallerChild = rightChild(index);
-            }
-            
-            if (heap[index].compareTo(heap[smallerChild]) < 0) {
-                break;
-            }
-            
-            swap(index, smallerChild);
-            index = smallerChild;
+            int largerChild = leftChild(index);
+if (rightChild(index) < size && 
+    heap[rightChild(index)].compareTo(heap[largerChild]) > 0) {
+    largerChild = rightChild(index);
+}
+if (heap[index].compareTo(heap[largerChild]) > 0) {
+    break;
+}
+swap(index, largerChild);
+index = largerChild;
         }
     }
     
@@ -119,7 +116,7 @@ public class PriorityQueue<T extends Comparable<T>> implements DataStructure<T> 
     
     /**
      * Inserts an item with a specified priority
-     * Lower priority values are dequeued first
+     * Higher priority values are dequeued first
      */
     public void add(T item, int priority) {
         if (item == null) {
@@ -206,7 +203,7 @@ public class PriorityQueue<T extends Comparable<T>> implements DataStructure<T> 
         if (index < size) {
             heapifyDown(index);
             
-            if (index > 0 && heap[index].compareTo(heap[parent(index)]) < 0) {
+            if (index > 0 && heap[index].compareTo(heap[parent(index)]) > 0) {
                 heapifyUp(index);
             }
         }
@@ -225,9 +222,9 @@ public class PriorityQueue<T extends Comparable<T>> implements DataStructure<T> 
                 int oldPriority = heap[i].priority;
                 heap[i].priority = newPriority;
                 
-                if (newPriority < oldPriority) {
+                if (newPriority > oldPriority) {
                     heapifyUp(i);
-                } else if (newPriority > oldPriority) {
+                } else if (newPriority < oldPriority) {
                     heapifyDown(i);
                 }
                 return;

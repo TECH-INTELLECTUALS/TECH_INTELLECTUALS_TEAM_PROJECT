@@ -16,7 +16,7 @@ public class Heap<T extends Comparable<T>> implements DataStructure<T> {
     
     @SuppressWarnings("unchecked")
     public Heap() {
-        heap = new Comparable[DEFAULT_CAPACITY];
+        heap = (T[]) new Comparable[DEFAULT_CAPACITY];
         size = 0;
     }
     
@@ -56,7 +56,7 @@ public class Heap<T extends Comparable<T>> implements DataStructure<T> {
     @SuppressWarnings("unchecked")
     private void resize() {
         T[] oldHeap = heap;
-        heap = new Comparable[oldHeap.length * 2];
+        heap = (T[]) new Comparable[oldHeap.length * 2];
         System.arraycopy(oldHeap, 0, heap, 0, oldHeap.length);
     }
     
