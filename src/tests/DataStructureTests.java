@@ -163,7 +163,7 @@ public class DataStructureTests {
       this.assertTrue(threwOnMissing, "DisjointSet.union should throw for an element that was never added");
    }
 
-   private void testGraph() {
+   /*private void testGraph() {
       Graph<String> graph = new Graph<>();
       this.assertTrue(graph.isEmpty(), "Graph should start empty");
 
@@ -189,7 +189,51 @@ public class DataStructureTests {
       graph.remove("D");
       this.assertEquals(3, graph.size(), "Graph size after removing a vertex");
       this.assertTrue(!graph.hasEdge("C", "D"), "Edges to a removed vertex should be gone too");
-   }
+   }*/
+
+
+
+
+
+       private void testGraph() {
+    Graph<String> graph = new Graph<>();
+    this.assertTrue(graph.isEmpty(), "Graph should start empty");
+
+    graph.add("A");
+    graph.add("B");
+    graph.add("C");
+    this.assertEquals(3, graph.size(), "Graph size after adding vertices");
+    this.assertTrue(!graph.hasEdge("A", "B"), "A and B should not be connected before addEdge");
+
+    graph.addEdge("A", "B", 5);
+    this.assertTrue(graph.hasEdge("A", "B"), "A and B should be connected after addEdge");
+    this.assertTrue(graph.hasEdge("B", "A"), "Graph should be undirected: B to A also connected");
+    this.assertEquals(5, graph.getWeight("A", "B"), "Edge weight should be stored correctly");
+    this.assertTrue(!graph.hasEdge("A", "C"), "A and C should not be connected yet");
+
+    graph.addEdge("C", "D", 8);
+    this.assertEquals(4, graph.size(), "Graph size after addEdge auto-adds a new vertex");
+    this.assertTrue(graph.hasEdge("C", "D"), "C and D should be connected after addEdge");
+    this.assertEquals(8, graph.getWeight("C", "D"), "Edge weight for C-D should be correct");
+
+    boolean threwOnBadWeight = false;
+    try {
+        graph.addEdge("A", "C", 0);
+    } catch (IllegalArgumentException e) {
+        threwOnBadWeight = true;
+    }
+    this.assertTrue(threwOnBadWeight, "addEdge should reject a weight of 0 or less");
+
+    graph.removeEdge("A", "B");
+    this.assertTrue(!graph.hasEdge("A", "B"), "A and B should not be connected after removeEdge");
+    this.assertEquals(4, graph.size(), "Graph size unchanged after removing an edge, not a vertex");
+
+    graph.remove("D");
+    this.assertEquals(3, graph.size(), "Graph size after removing a vertex");
+    this.assertTrue(!graph.hasEdge("C", "D"), "Edges to a removed vertex should be gone too");
+}
+
+
 
    private void assertTrue(boolean condition, String message) {
       if (!condition) {
