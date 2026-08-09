@@ -1,4 +1,4 @@
-﻿package database;
+package database;
 
 /**
  * Placeholder for database connection handling.

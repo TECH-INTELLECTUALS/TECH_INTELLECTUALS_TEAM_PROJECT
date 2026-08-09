@@ -1,4 +1,4 @@
-﻿package models;
+package models;
 
 /**
  * Tracks a single algorithm execution instance for analytics and review.

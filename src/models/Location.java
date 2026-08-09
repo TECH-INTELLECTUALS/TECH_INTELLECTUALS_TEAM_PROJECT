@@ -1,4 +1,4 @@
-﻿package models;
+package models;
 
 /**
  * Represents a campus location such as a building, lab, hostel or shuttle stop.

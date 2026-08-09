@@ -1,4 +1,4 @@
-﻿package models;
+package models;
 
 /**
  * Represents an audit trail event for campus service operations.

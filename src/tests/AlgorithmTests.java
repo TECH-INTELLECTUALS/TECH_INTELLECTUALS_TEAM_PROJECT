@@ -1,4 +1,4 @@
-﻿package tests;
+package tests;
 
 /**
  * Placeholder test suite for algorithm classes.

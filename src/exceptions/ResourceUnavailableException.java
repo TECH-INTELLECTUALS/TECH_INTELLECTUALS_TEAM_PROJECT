@@ -1,4 +1,4 @@
-﻿package exceptions;
+package exceptions;
 
 /**
  * Thrown when a requested resource is not available.

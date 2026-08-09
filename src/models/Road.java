@@ -1,4 +1,4 @@
-﻿package models;
+package models;
 
 /**
  * Represents a connectivity link between two campus locations.

@@ -1,4 +1,4 @@
-﻿package interfaces;
+package interfaces;
 
 /**
  * Marker interface for algorithm implementation classes.

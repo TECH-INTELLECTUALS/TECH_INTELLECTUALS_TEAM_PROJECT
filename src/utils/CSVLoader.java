@@ -1,4 +1,4 @@
-﻿package utils;
+package utils;
 
 /**
  * Utility placeholder for CSV file loading and parsing.

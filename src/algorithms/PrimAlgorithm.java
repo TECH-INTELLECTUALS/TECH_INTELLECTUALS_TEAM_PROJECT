@@ -1,4 +1,4 @@
-﻿package algorithms;
+package algorithms;
 
 import interfaces.Algorithm;
 import datastructures.Graph;
