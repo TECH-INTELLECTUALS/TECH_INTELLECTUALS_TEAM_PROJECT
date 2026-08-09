@@ -65,33 +65,33 @@ public class Heap<T extends Comparable<T>> implements DataStructure<T> {
      * Called after inserting a new element
      */
     private void heapifyUp(int index) {
-        while (index > 0 && heap[index].compareTo(heap[parent(index)]) < 0) {
+        while (index > 0 && heap[index].compareTo(heap[parent(index)]) > 0) {
             swap(index, parent(index));
             index = parent(index);
         }
     }
     
     /**
-     * Moves an element down the heap to maintain min-heap property
+     * Moves an element down the heap to maintain max-heap property
      * Called after removing the root
      */
     private void heapifyDown(int index) {
         while (leftChild(index) < size) {
-            int smallerChild = leftChild(index);
+            int largerChild = leftChild(index);
             
-            // Find the smaller of the two children
+            // Find the larger of the two children
             if (rightChild(index) < size && 
-                heap[rightChild(index)].compareTo(heap[smallerChild]) < 0) {
-                smallerChild = rightChild(index);
+                heap[rightChild(index)].compareTo(heap[largerChild]) > 0) {
+                largerChild = rightChild(index);
             }
             
             // If current element is smaller than smallest child, heap property is satisfied
-            if (heap[index].compareTo(heap[smallerChild]) < 0) {
+            if (heap[index].compareTo(heap[largerChild]) > 0) {
                 break;
             }
             
-            swap(index, smallerChild);
-            index = smallerChild;
+            swap(index, largerChild);
+            index = largerChild;
         }
     }
     
@@ -118,7 +118,7 @@ public class Heap<T extends Comparable<T>> implements DataStructure<T> {
     }
     
     /**
-     * Removes the minimum element (root) from the heap
+     * Removes the maximum element (root) from the heap
      */
     public T remove() {
         if (isEmpty()) {
@@ -175,14 +175,14 @@ public class Heap<T extends Comparable<T>> implements DataStructure<T> {
             heapifyDown(index);
             
             // If element is still out of place, heapify up
-            if (index > 0 && heap[index].compareTo(heap[parent(index)]) < 0) {
+            if (index > 0 && heap[index].compareTo(heap[parent(index)]) > 0) {
                 heapifyUp(index);
             }
         }
     }
     
     /**
-     * Returns the minimum element without removing it
+     * Returns the maximum element without removing it
      */
     public T peek() {
         if (isEmpty()) {
