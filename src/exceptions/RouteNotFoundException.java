@@ -1,4 +1,4 @@
-﻿package exceptions;
+package exceptions;
 
 /**
  * Thrown when no route can be found between campus locations.

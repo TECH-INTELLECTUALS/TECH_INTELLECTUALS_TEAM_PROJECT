@@ -1,4 +1,4 @@
-﻿package interfaces;
+package interfaces;
 
 /**
  * Generic repository contract for persistence operations.

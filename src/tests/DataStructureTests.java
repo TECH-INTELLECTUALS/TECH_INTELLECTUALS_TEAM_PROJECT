@@ -1,9 +1,11 @@
 package tests;
 
+
 import datastructures.BinarySearchTree;
 import datastructures.BTree;
 import datastructures.CircularQueue;
 import datastructures.Deque;
+
 
 /**
  * Test suite for the first four custom data structures.
