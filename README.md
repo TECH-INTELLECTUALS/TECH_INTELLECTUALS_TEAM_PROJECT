@@ -14,7 +14,7 @@ Students, staff, and campus administrators need a unified system to request and 
 
 - Maintenance and service request tracking
 - Shuttle and route planning across campus
-- Resource movement and availability management
+- Medical\Emergence requests
 - Scheduling of service requests and task assignments
 - Custom data structures instead of Java built-in collections
 - Algorithmic support for search, sorting, graph traversal, and optimization
