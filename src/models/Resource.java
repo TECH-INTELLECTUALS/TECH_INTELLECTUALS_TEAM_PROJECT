@@ -7,7 +7,7 @@ public class Resource {
 
     private String resourceId;
     private String resourceType;
-    private int homeLocationId;
+    private String homeLocationId;
     private int capacity;
     private String availabilityStatus;
 
@@ -15,7 +15,7 @@ public class Resource {
     public Resource(
             String resourceId,
             String resourceType,
-            int homeLocationId,
+            String homeLocationId,
             int capacity,
             String availabilityStatus
     ) {
@@ -48,12 +48,12 @@ public class Resource {
     }
 
 
-    public int getHomeLocationId() {
+    public String getHomeLocationId() {
         return homeLocationId;
     }
 
 
-    public void setHomeLocationId(int homeLocationId) {
+    public void setHomeLocationId(String homeLocationId) {
         this.homeLocationId = homeLocationId;
     }
 

@@ -42,7 +42,7 @@ public class ResourceRepository {
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, resource.getResourceId());
             stmt.setString(2, resource.getResourceType());
-            stmt.setInt(3, resource.getHomeLocationId());
+            stmt.setString(3, resource.getHomeLocationId());
             stmt.setInt(4, resource.getCapacity());
             stmt.setString(5, resource.getAvailabilityStatus());
             stmt.executeUpdate();
@@ -140,7 +140,7 @@ public class ResourceRepository {
         return new Resource(
                 rs.getString("resource_id"),
                 rs.getString("resource_type"),
-                rs.getInt("home_location_id"),
+                rs.getString("home_location_id"),
                 rs.getInt("capacity"),
                 rs.getString("availability_status")
         );
