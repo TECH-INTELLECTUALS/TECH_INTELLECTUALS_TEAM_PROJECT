@@ -1,4 +1,4 @@
-﻿package utils;
+package utils;
 
 /**
  * Central location for application constants and configuration keys.
