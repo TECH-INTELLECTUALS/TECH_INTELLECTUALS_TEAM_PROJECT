@@ -167,18 +167,6 @@ public class LinkedList<T> implements DataStructure<T> {
     /**
      * Retrieves the element at a specific index
      */
-    public T get(int index) {
-        if (index < 0 || index >= size) {
-            throw new IndexOutOfBoundsException("Index out of bounds: " + index);
-        }
-        
-        Node current = head;
-        for (int i = 0; i < index; i++) {
-            current = current.next;
-        }
-        
-        return current.data;
-    }
     
     /**
      * Retrieves the first element without removing it
@@ -233,6 +221,35 @@ public class LinkedList<T> implements DataStructure<T> {
     @Override
     public boolean isEmpty() {
         return size == 0;
+    }
+
+    @Override
+    public T get(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index out of bounds: " + index);
+        }
+
+        Node current = head;
+        for (int i = 0; i < index; i++) {
+            current = current.next;
+        }
+        return current.data;
+    }
+
+    @Override
+    public void set(int index, T item) {
+        if (item == null) {
+            throw new IllegalArgumentException("Null elements not allowed");
+        }
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index out of bounds: " + index);
+        }
+
+        Node current = head;
+        for (int i = 0; i < index; i++) {
+            current = current.next;
+        }
+        current.data = item;
     }
     
     /**

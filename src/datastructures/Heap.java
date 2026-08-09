@@ -200,4 +200,23 @@ public class Heap<T extends Comparable<T>> implements DataStructure<T> {
     public boolean isEmpty() {
         return size == 0;
     }
+
+    @Override
+    public T get(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index out of bounds: " + index);
+        }
+        return heap[index];
+    }
+
+    @Override
+    public void set(int index, T item) {
+        if (item == null) {
+            throw new IllegalArgumentException("Null elements not allowed");
+        }
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index out of bounds: " + index);
+        }
+        heap[index] = item;
+    }
 }
