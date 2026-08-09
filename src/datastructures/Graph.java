@@ -3,22 +3,31 @@ package datastructures;
 import interfaces.DataStructure;
 
 /**
- * A simple undirected graph using an adjacency matrix
- * (a grid of true/false values showing which vertices connect).
- *
- * This is easier to follow than an adjacency list for beginners,
- * though it uses more memory for graphs with few edges.
+ * A simple undirected, WEIGHTED graph using an adjacency matrix.
+ * edges[i][j] holds the weight of the connection between vertex i and
+ * vertex j, or -1 if no edge exists between them.
  */
 public class Graph<T> implements DataStructure<T> {
 
+    private static final int NO_EDGE = -1;
+
     private Object[] vertices;      // the list of vertices (nodes)
-    private boolean[][] edges;      // edges[i][j] = true means vertex i connects to vertex j
+    private int[][] edges;          // edges[i][j] = weight, or NO_EDGE if not connected
     private int count;              // how many vertices are currently stored
 
     public Graph() {
         vertices = new Object[10];
-        edges = new boolean[10][10];
+        edges = new int[10][10];
+        fillNoEdge(edges);
         count = 0;
+    }
+
+    private void fillNoEdge(int[][] grid) {
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                grid[i][j] = NO_EDGE;
+            }
+        }
     }
 
     @Override
@@ -40,13 +49,11 @@ public class Graph<T> implements DataStructure<T> {
             return;
         }
 
-        // Shift vertices after "index" one spot to the left
         for (int i = index; i < count - 1; i++) {
             vertices[i] = vertices[i + 1];
         }
         vertices[count - 1] = null;
 
-        // Shift the edges grid to match (both rows and columns)
         for (int row = index; row < count - 1; row++) {
             for (int col = 0; col < count; col++) {
                 edges[row][col] = edges[row + 1][col];
@@ -72,6 +79,7 @@ public class Graph<T> implements DataStructure<T> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public T get(int index) {
         if (index < 0 || index >= count) {
             throw new IndexOutOfBoundsException("Bad index: " + index);
@@ -85,23 +93,25 @@ public class Graph<T> implements DataStructure<T> {
             throw new IndexOutOfBoundsException("Bad index: " + index);
         }
         vertices[index] = item;
-        // Clear this vertex's old connections since it's now a different item
         for (int i = 0; i < count; i++) {
-            edges[index][i] = false;
-            edges[i][index] = false;
+            edges[index][i] = NO_EDGE;
+            edges[i][index] = NO_EDGE;
         }
     }
 
     // --- Graph specific methods ---
 
-    /** Adds an edge (connection) between a and b. Adds them as vertices first if missing. */
-    public void addEdge(T a, T b) {
+    /** Adds a weighted edge between a and b. Adds them as vertices first if missing. */
+    public void addEdge(T a, T b, int weight) {
+        if (weight <= 0) {
+            throw new IllegalArgumentException("Edge weight must be positive: " + weight);
+        }
         add(a);
         add(b);
         int indexA = indexOf(a);
         int indexB = indexOf(b);
-        edges[indexA][indexB] = true;
-        edges[indexB][indexA] = true; // undirected, so both directions
+        edges[indexA][indexB] = weight;
+        edges[indexB][indexA] = weight; // undirected, so both directions
     }
 
     /** Removes the edge between a and b, if it exists. */
@@ -109,8 +119,8 @@ public class Graph<T> implements DataStructure<T> {
         int indexA = indexOf(a);
         int indexB = indexOf(b);
         if (indexA != -1 && indexB != -1) {
-            edges[indexA][indexB] = false;
-            edges[indexB][indexA] = false;
+            edges[indexA][indexB] = NO_EDGE;
+            edges[indexB][indexA] = NO_EDGE;
         }
     }
 
@@ -121,16 +131,87 @@ public class Graph<T> implements DataStructure<T> {
         if (indexA == -1 || indexB == -1) {
             return false;
         }
+        return edges[indexA][indexB] != NO_EDGE;
+    }
+
+    /** Returns the weight of the edge between a and b, or -1 if no edge exists. */
+    public int getWeight(T a, T b) {
+        int indexA = indexOf(a);
+        int indexB = indexOf(b);
+        if (indexA == -1 || indexB == -1) {
+            return NO_EDGE;
+        }
         return edges[indexA][indexB];
     }
 
-    /** Prints all vertices and which ones each vertex connects to (for debugging/testing). */
+    /** Returns the vertex index for a given item, or -1 if not present. */
+    public int indexOfVertex(T item) {
+        return indexOf(item);
+    }
+
+    /**
+     * Returns every edge leaving vertexIndex as pairs of {neighborIndex, weight}.
+     * No java.util collections used — plain array, consistent with the rest
+     * of this class. Algorithms (Dijkstra/Prim/Kruskal) should iterate this
+     * with a plain for-loop.
+     */
+    public int[][] getEdgesFrom(int vertexIndex) {
+        if (vertexIndex < 0 || vertexIndex >= count) {
+            throw new IndexOutOfBoundsException("Bad index: " + vertexIndex);
+        }
+
+        int edgeCount = 0;
+        for (int j = 0; j < count; j++) {
+            if (edges[vertexIndex][j] != NO_EDGE) {
+                edgeCount++;
+            }
+        }
+
+        int[][] result = new int[edgeCount][2];
+        int pos = 0;
+        for (int j = 0; j < count; j++) {
+            if (edges[vertexIndex][j] != NO_EDGE) {
+                result[pos][0] = j;
+                result[pos][1] = edges[vertexIndex][j];
+                pos++;
+            }
+        }
+        return result;
+    }
+
+    /** Returns every edge in the whole graph as {fromIndex, toIndex, weight} — useful for Kruskal. */
+    public int[][] getAllEdges() {
+        int edgeCount = 0;
+        for (int i = 0; i < count; i++) {
+            for (int j = i + 1; j < count; j++) {
+                if (edges[i][j] != NO_EDGE) {
+                    edgeCount++;
+                }
+            }
+        }
+
+        int[][] result = new int[edgeCount][3];
+        int pos = 0;
+        for (int i = 0; i < count; i++) {
+            for (int j = i + 1; j < count; j++) {
+                if (edges[i][j] != NO_EDGE) {
+                    result[pos][0] = i;
+                    result[pos][1] = j;
+                    result[pos][2] = edges[i][j];
+                    pos++;
+                }
+            }
+        }
+        return result;
+    }
+
+    /** Prints all vertices and which ones each vertex connects to, with weights (for debugging/testing). */
     public void printGraph() {
         for (int i = 0; i < count; i++) {
             System.out.print(vertices[i] + " connects to: ");
             for (int j = 0; j < count; j++) {
-                if (edges[i][j]) {
-                    System.out.print(vertices[j] + " ");
+                if (edges[i][j] != NO_EDGE) {
+                    System.out.print(vertices[j] + "(w=" + edges[i][j] + ") ");
                 }
             }
             System.out.println();
@@ -154,7 +235,8 @@ public class Graph<T> implements DataStructure<T> {
             biggerVertices[i] = vertices[i];
         }
 
-        boolean[][] biggerEdges = new boolean[edges.length * 2][edges.length * 2];
+        int[][] biggerEdges = new int[edges.length * 2][edges.length * 2];
+        fillNoEdge(biggerEdges);
         for (int i = 0; i < edges.length; i++) {
             for (int j = 0; j < edges.length; j++) {
                 biggerEdges[i][j] = edges[i][j];
