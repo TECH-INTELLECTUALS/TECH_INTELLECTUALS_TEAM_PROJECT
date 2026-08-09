@@ -63,13 +63,13 @@ public class ServiceRequestRepository {
     /**
      * Finds a service request by its ID.
      */
-    public ServiceRequest findById(int requestId) {
+    public ServiceRequest findById(String requestId) {
         String sql = "SELECT * FROM service_requests WHERE request_id = ?;";
 
         Connection conn = databaseConnection.open();
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, requestId);
+            stmt.setString(1, requestId);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -130,17 +130,16 @@ public class ServiceRequestRepository {
     }
 
     /**
-     * Retrieves all service requests with a given urgency level
-     * (e.g. "LOW", "MEDIUM", "HIGH", "CRITICAL").
+     * Retrieves all service requests with a given urgency level (1-5).
      */
-    public List<ServiceRequest> findByUrgency(String urgency) {
+    public List<ServiceRequest> findByUrgency(int urgency) {
         String sql = "SELECT * FROM service_requests WHERE urgency = ?;";
         List<ServiceRequest> requests = new ArrayList<>();
 
         Connection conn = databaseConnection.open();
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, urgency);
+            stmt.setInt(1, urgency);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -157,13 +156,13 @@ public class ServiceRequestRepository {
     /**
      * Deletes a service request by its ID.
      */
-    public void delete(int requestId) {
+    public void delete(String requestId) {
         String sql = "DELETE FROM service_requests WHERE request_id = ?;";
 
         Connection conn = databaseConnection.open();
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, requestId);
+            stmt.setString(1, requestId);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Failed to delete service request: " + requestId, e);

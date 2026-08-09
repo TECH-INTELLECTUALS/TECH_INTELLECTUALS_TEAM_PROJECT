@@ -54,13 +54,13 @@ public class ResourceRepository {
     /**
      * Finds a resource by its ID.
      */
-    public Resource findById(int resourceId) {
+    public Resource findById(String resourceId) {
         String sql = "SELECT * FROM resources WHERE resource_id = ?;";
 
         Connection conn = databaseConnection.open();
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, resourceId);
+            stmt.setString(1, resourceId);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -123,13 +123,13 @@ public class ResourceRepository {
     /**
      * Deletes a resource by its ID.
      */
-    public void delete(int resourceId) {
+    public void delete(String resourceId) {
         String sql = "DELETE FROM resources WHERE resource_id = ?;";
 
         Connection conn = databaseConnection.open();
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, resourceId);
+            stmt.setString(1, resourceId);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Failed to delete resource: " + resourceId, e);

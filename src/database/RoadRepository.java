@@ -59,13 +59,13 @@ public class RoadRepository {
     /**
      * Finds a road by its ID.
      */
-    public Road findById(int roadId) {
+    public Road findById(String roadId) {
         String sql = "SELECT * FROM roads WHERE road_id = ?;";
 
         Connection conn = databaseConnection.open();
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, roadId);
+            stmt.setString(1, roadId);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -104,14 +104,14 @@ public class RoadRepository {
      * Retrieves all roads originating from a given location — useful for
      * building the Graph adjacency structure (each location's outgoing edges).
      */
-    public List<Road> findByFromLocationId(int fromLocationId) {
+    public List<Road> findByFromLocationId(String fromLocationId) {
         String sql = "SELECT * FROM roads WHERE from_location_id = ?;";
         List<Road> roads = new ArrayList<>();
 
         Connection conn = databaseConnection.open();
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, fromLocationId);
+            stmt.setString(1, fromLocationId);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
@@ -128,13 +128,13 @@ public class RoadRepository {
     /**
      * Deletes a road by its ID.
      */
-    public void delete(int roadId) {
+    public void delete(String roadId) {
         String sql = "DELETE FROM roads WHERE road_id = ?;";
 
         Connection conn = databaseConnection.open();
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, roadId);
+            stmt.setString(1, roadId);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Failed to delete road: " + roadId, e);

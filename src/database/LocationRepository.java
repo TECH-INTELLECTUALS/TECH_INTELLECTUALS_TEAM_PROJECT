@@ -59,13 +59,13 @@ public class LocationRepository {
      * @param locationId the location's ID
      * @return the matching Location, or null if not found
      */
-    public Location findById(int locationId) {
+    public Location findById(String locationId) {
         String sql = "SELECT * FROM locations WHERE location_id = ?;";
 
         Connection conn = databaseConnection.open();
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, locationId);
+            stmt.setString(1, locationId);
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -107,13 +107,13 @@ public class LocationRepository {
      *
      * @param locationId the location's ID
      */
-    public void delete(int locationId) {
+    public void delete(String locationId) {
         String sql = "DELETE FROM locations WHERE location_id = ?;";
 
         Connection conn = databaseConnection.open();
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, locationId);
+            stmt.setString(1, locationId);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException("Failed to delete location: " + locationId, e);
