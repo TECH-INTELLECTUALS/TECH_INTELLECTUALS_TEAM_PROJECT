@@ -2,73 +2,90 @@ package algorithms;
 
 import interfaces.Algorithm;
 import datastructures.Graph;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
+import datastructures.Heap;
 
 /**
  * Dijkstra's algorithm for shortest-path planning.
  *
- * NOTE: This depends on Graph.getAdjacencyList() returning a
- * List<List<int[]>> where each int[] is {toNode, weight}, as agreed
- * in the team spec (Elton's Graph.java). Until Graph is fully built,
- * this class will not compile/run — but the logic below is written
- * against the agreed method signatures, so it should work as-is once
- * Graph is implemented.
+ * Works directly against Graph's array-based methods (getEdgesFrom,
+ * indexOfVertex, get) — no java.util collections used anywhere.
  *
- * Also using java.util.PriorityQueue as a temporary stand-in for
- * Samuel's Heap.java, since Heap doesn't yet expose a poll()/extractMin()
- * method. Swap the PriorityQueue below for Heap once that's ready —
- * the rest of the algorithm won't need to change.
+ * Uses Samuel's Heap as the priority queue. Heap is a max-heap (for
+ * scheduling), so Entry.compareTo() is deliberately reversed to make
+ * it behave like a min-heap here — the smallest distance must come
+ * out first for Dijkstra to work correctly.
  */
-public class DijkstraAlgorithm implements Algorithm {
+public class DijkstraAlgorithm<T> implements Algorithm {
 
-    private Map<Integer, Integer> distances;
-    private Map<Integer, Integer> previous;
+    private static final int NO_PATH = -1;
+
+    private int[] distances;
+    private int[] previous;
+    private Graph<T> graph;
+
+    private static class Entry implements Comparable<Entry> {
+        int vertexIndex;
+        int distance;
+
+        Entry(int vertexIndex, int distance) {
+            this.vertexIndex = vertexIndex;
+            this.distance = distance;
+        }
+
+        @Override
+        public int compareTo(Entry other) {
+            // Reversed on purpose: Heap is max-heap, but Dijkstra needs
+            // the SMALLEST distance to come out first.
+            return Integer.compare(other.distance, this.distance);
+        }
+    }
 
     /**
-     * Computes the shortest distance from source to every other node.
+     * Computes the shortest distance from source to every other vertex.
      *
      * @param g      the graph to search
-     * @param source the starting node
-     * @return a map of node -> shortest distance from source
+     * @param source the starting vertex
+     * @return distances indexed by vertex index (Integer.MAX_VALUE = unreachable)
      */
-    public Map<Integer, Integer> shortestPath(Graph<Integer> g, int source) {
-        distances = new HashMap<>();
-        previous = new HashMap<>();
+    public int[] shortestPath(Graph<T> g, T source) {
+        this.graph = g;
+        int n = g.size();
+        distances = new int[n];
+        previous = new int[n];
 
-        List<List<int[]>> adjacencyList = g.getAdjacencyList();
-
-        // Initialize all distances as "infinity"
-        for (int node = 0; node < adjacencyList.size(); node++) {
-            distances.put(node, Integer.MAX_VALUE);
+        for (int i = 0; i < n; i++) {
+            distances[i] = Integer.MAX_VALUE;
+            previous[i] = NO_PATH;
         }
-        distances.put(source, 0);
 
-        // TODO: replace with Samuel's Heap once it supports extract-min
-        PriorityQueue<int[]> queue = new PriorityQueue<>((a, b) -> a[1] - b[1]);
-        queue.add(new int[] { source, 0 }); // {node, distance}
+        int sourceIndex = g.indexOfVertex(source);
+        if (sourceIndex == -1) {
+            throw new IllegalArgumentException("Source vertex not found in graph");
+        }
+        distances[sourceIndex] = 0;
+
+        Heap<Entry> queue = new Heap<>();
+        queue.add(new Entry(sourceIndex, 0));
 
         while (!queue.isEmpty()) {
-            int[] current = queue.poll();
-            int currentNode = current[0];
-            int currentDist = current[1];
+            Entry current = queue.remove();
+            int currentIndex = current.vertexIndex;
+            int currentDist = current.distance;
 
-            if (currentDist > distances.get(currentNode)) {
+            if (currentDist > distances[currentIndex]) {
                 continue; // stale entry, skip
             }
 
-            for (int[] edge : adjacencyList.get(currentNode)) {
-                int neighbor = edge[0];
+            int[][] edgesFromCurrent = g.getEdgesFrom(currentIndex);
+            for (int[] edge : edgesFromCurrent) {
+                int neighborIndex = edge[0];
                 int weight = edge[1];
                 int newDist = currentDist + weight;
 
-                if (newDist < distances.get(neighbor)) {
-                    distances.put(neighbor, newDist);
-                    previous.put(neighbor, currentNode);
-                    queue.add(new int[] { neighbor, newDist });
+                if (newDist < distances[neighborIndex]) {
+                    distances[neighborIndex] = newDist;
+                    previous[neighborIndex] = currentIndex;
+                    queue.add(new Entry(neighborIndex, newDist));
                 }
             }
         }
@@ -77,36 +94,50 @@ public class DijkstraAlgorithm implements Algorithm {
     }
 
     /**
-     * Reconstructs the shortest path between two nodes.
-     * Must be called after shortestPath() has been run.
-     *
-     * @param source the starting node
-     * @param dest   the destination node
-     * @return the list of nodes from source to dest, in order
+     * Reconstructs the shortest path from source to dest as an array of
+     * VERTEX INDICES (use graph.get(index) to convert back to T if needed).
+     * Must be called after shortestPath(). Returns an empty array if no
+     * path exists.
      */
-    public List<Integer> getPath(int source, int dest) {
-        if (previous == null) {
+    public int[] getPath(T dest) {
+        if (previous == null || graph == null) {
             throw new IllegalStateException("shortestPath() must be called before getPath()");
         }
 
-        java.util.LinkedList<Integer> path = new java.util.LinkedList<>();
-        Integer step = dest;
-
-        if (!distances.containsKey(dest) || distances.get(dest) == Integer.MAX_VALUE) {
-            return path; // no path exists
+        int destIndex = graph.indexOfVertex(dest);
+        if (destIndex == -1 || distances[destIndex] == Integer.MAX_VALUE) {
+            return new int[0]; // no path exists
         }
 
-        while (step != null) {
-            path.addFirst(step);
-            step = previous.get(step);
+        int length = 0;
+        int step = destIndex;
+        while (step != NO_PATH) {
+            length++;
+            step = previous[step];
+        }
+
+        int[] path = new int[length];
+        step = destIndex;
+        for (int i = length - 1; i >= 0; i--) {
+            path[i] = step;
+            step = previous[step];
         }
 
         return path;
     }
 
+    /** Returns the shortest distance to dest. Must be called after shortestPath(). */
+    public int getDistance(T dest) {
+        if (distances == null || graph == null) {
+            throw new IllegalStateException("shortestPath() must be called before getDistance()");
+        }
+        int destIndex = graph.indexOfVertex(dest);
+        return destIndex == -1 ? NO_PATH : distances[destIndex];
+    }
+
     @Override
     public void execute() {
         // Marker method required by Algorithm interface.
-        // Real work happens in shortestPath() / getPath() above.
+        // Real work happens in shortestPath() / getPath() / getDistance() above.
     }
 }
