@@ -6,7 +6,7 @@
 
 -- Locations: campus nodes (buildings, hostels, labs, shuttle stops)
 CREATE TABLE IF NOT EXISTS locations (
-    location_id     INTEGER PRIMARY KEY,
+    location_id     TEXT PRIMARY KEY,
     name            TEXT NOT NULL,
     area            TEXT,
     location_type   TEXT,
@@ -16,9 +16,9 @@ CREATE TABLE IF NOT EXISTS locations (
 
 -- Roads: weighted, directional edges between locations
 CREATE TABLE IF NOT EXISTS roads (
-    road_id             INTEGER PRIMARY KEY,
-    from_location_id    INTEGER NOT NULL,
-    to_location_id      INTEGER NOT NULL,
+    road_id             TEXT PRIMARY KEY,
+    from_location_id    TEXT NOT NULL,
+    to_location_id      TEXT NOT NULL,
     distance_km         REAL,
     travel_time_min     REAL,
     condition_weight    REAL,
@@ -28,12 +28,12 @@ CREATE TABLE IF NOT EXISTS roads (
 
 -- Service Requests: maintenance/service jobs submitted by users
 CREATE TABLE IF NOT EXISTS service_requests (
-    request_id                 INTEGER PRIMARY KEY,
-    source_location_id         INTEGER NOT NULL,
-    destination_location_id    INTEGER NOT NULL,
+    request_id                 TEXT PRIMARY KEY,
+    source_location_id         TEXT NOT NULL,
+    destination_location_id    TEXT NOT NULL,
     category                   TEXT,
-    urgency                    TEXT,
-    time_submitted              TEXT,
+    urgency                    INTEGER,
+    time_submitted             TEXT,
     deadline                   TEXT,
     status                     TEXT,
     FOREIGN KEY (source_location_id) REFERENCES locations(location_id),
@@ -42,9 +42,9 @@ CREATE TABLE IF NOT EXISTS service_requests (
 
 -- Resources: campus assets (vehicles, equipment, staff, etc.)
 CREATE TABLE IF NOT EXISTS resources (
-    resource_id             INTEGER PRIMARY KEY,
+    resource_id             TEXT PRIMARY KEY,
     resource_type           TEXT NOT NULL,
-    home_location_id        INTEGER,
+    home_location_id        TEXT,
     capacity                INTEGER,
     availability_status     TEXT,
     FOREIGN KEY (home_location_id) REFERENCES locations(location_id)
