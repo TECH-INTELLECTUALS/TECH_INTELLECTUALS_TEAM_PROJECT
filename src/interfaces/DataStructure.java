@@ -7,6 +7,7 @@ public interface DataStructure<T> {
     int size();
     boolean isEmpty();
 
+
     default T get(int index) {
         throw new UnsupportedOperationException(this.getClass().getSimpleName() + " does not support indexed get()");
     }
@@ -15,3 +16,4 @@ public interface DataStructure<T> {
         throw new UnsupportedOperationException(this.getClass().getSimpleName() + " does not support indexed set()");
     }
 }
+
