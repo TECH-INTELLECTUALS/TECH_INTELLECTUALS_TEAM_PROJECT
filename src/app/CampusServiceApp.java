@@ -1,4 +1,4 @@
-﻿package app;
+package app;
 
 /**
  * Entry point for the University Campus Service Hub application.

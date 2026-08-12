@@ -1,4 +1,4 @@
-﻿package controllers;
+package controllers;
 
 /**
  * Alternative main controller entry point for application startup.

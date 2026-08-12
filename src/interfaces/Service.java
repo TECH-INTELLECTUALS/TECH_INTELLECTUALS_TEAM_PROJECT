@@ -1,4 +1,4 @@
-﻿package interfaces;
+package interfaces;
 
 /**
  * Common service contract for business service classes.
