@@ -1,4 +1,4 @@
-package algorithms;
+﻿package algorithms;
 
 import interfaces.Algorithm;
 import datastructures.Graph;
@@ -6,20 +6,14 @@ import datastructures.DisjointSet;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Collections;
 import java.util.Comparator;
 
 /**
  * Kruskal's algorithm for building a Minimum Spanning Tree (MST).
  *
- * NOTE: This depends on:
- *  - Graph.getAdjacencyList() returning List<List<int[]>>, each int[]
- *    being {toNode, weight}, as agreed in the team spec.
- *  - Daniel's DisjointSet exposing find(int) and union(int, int) methods.
- *    DisjointSet currently only has the generic add/remove/size/isEmpty
- *    placeholder methods, so this class will not compile/run until
- *    find()/union() are added. The logic below is written against those
- *    expected method names, so it should work once they exist.
+ * Uses Daniel's DisjointSet<T>, which works on actual elements (not
+ * raw indices): add(item), find(item), union(item1, item2), and
+ * connected(item1, item2). We use Integer node IDs as the elements.
  */
 public class KruskalAlgorithm implements Algorithm {
 
@@ -27,7 +21,8 @@ public class KruskalAlgorithm implements Algorithm {
      * Builds a Minimum Spanning Tree using Kruskal's algorithm.
      *
      * @param g  the graph to build the MST from
-     * @param ds a DisjointSet used to detect cycles
+     * @param ds a DisjointSet used to detect cycles (pass in a fresh,
+     *           empty DisjointSet<Integer>)
      * @return list of edges in the MST, each as {from, to, weight}
      */
     public List<int[]> mst(Graph<Integer> g, DisjointSet<Integer> ds) {
@@ -53,15 +48,14 @@ public class KruskalAlgorithm implements Algorithm {
 
         // Initialize each node as its own set
         for (int node = 0; node < adjacencyList.size(); node++) {
-            ds.add(node); // NOTE: relies on DisjointSet.add() creating a new singleton set for this node
+            ds.add(node); // autoboxed to Integer
         }
 
         for (int[] edge : allEdges) {
             int from = edge[0];
             int to = edge[1];
 
-            // TODO: replace with Daniel's find()/union() once implemented
-            if (ds.find(from) != ds.find(to)) {
+            if (!ds.connected(from, to)) {
                 ds.union(from, to);
                 mstEdges.add(edge);
             }

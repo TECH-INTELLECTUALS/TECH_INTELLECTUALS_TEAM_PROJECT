@@ -1,23 +1,43 @@
-package algorithms;
+﻿package algorithms;
 
 import interfaces.Algorithm;
 import datastructures.Graph;
+import datastructures.Heap;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.HashSet;
 
 /**
  * Prim's algorithm for building a Minimum Spanning Tree (MST).
  *
- * NOTE: Same dependency situation as DijkstraAlgorithm — this relies on
- * Graph.getAdjacencyList() returning a List<List<int[]>> where each
- * int[] is {toNode, weight}. Using java.util.PriorityQueue as a
- * temporary stand-in for Samuel's Heap until it supports extract-min.
+ * Uses Samuel's Heap<T> (a real min-heap) as the priority queue.
+ * Heap requires T to be Comparable, so we wrap each edge in a small
+ * Edge class that compares by weight.
  */
 public class PrimAlgorithm implements Algorithm {
+
+    /**
+     * Wraps an edge (from, to, weight) so it can be compared and
+     * stored in the min-heap.
+     */
+    private static class Edge implements Comparable<Edge> {
+        int from;
+        int to;
+        int weight;
+
+        Edge(int from, int to, int weight) {
+            this.from = from;
+            this.to = to;
+            this.weight = weight;
+        }
+
+        @Override
+        public int compareTo(Edge other) {
+            return Integer.compare(this.weight, other.weight);
+        }
+    }
 
     /**
      * Builds a Minimum Spanning Tree starting from node 0.
@@ -34,35 +54,33 @@ public class PrimAlgorithm implements Algorithm {
         }
 
         Set<Integer> visited = new HashSet<>();
-        // TODO: replace with Samuel's Heap once it supports extract-min
-        // Each entry: {from, to, weight}
-        PriorityQueue<int[]> queue = new PriorityQueue<>((a, b) -> a[2] - b[2]);
+        Heap<Edge> queue = new Heap<>();
 
         int startNode = 0;
         visited.add(startNode);
         addEdgesToQueue(startNode, adjacencyList, queue);
 
         while (!queue.isEmpty() && visited.size() < adjacencyList.size()) {
-            int[] edge = queue.poll();
-            int to = edge[1];
+            Edge edge = queue.remove(); // removes and returns the smallest-weight edge
+            int to = edge.to;
 
             if (visited.contains(to)) {
                 continue; // both endpoints already in MST, skip
             }
 
             visited.add(to);
-            mstEdges.add(edge);
+            mstEdges.add(new int[] { edge.from, edge.to, edge.weight });
             addEdgesToQueue(to, adjacencyList, queue);
         }
 
         return mstEdges;
     }
 
-    private void addEdgesToQueue(int node, List<List<int[]>> adjacencyList, PriorityQueue<int[]> queue) {
+    private void addEdgesToQueue(int node, List<List<int[]>> adjacencyList, Heap<Edge> queue) {
         for (int[] edge : adjacencyList.get(node)) {
             int to = edge[0];
             int weight = edge[1];
-            queue.add(new int[] { node, to, weight });
+            queue.add(new Edge(node, to, weight));
         }
     }
 
