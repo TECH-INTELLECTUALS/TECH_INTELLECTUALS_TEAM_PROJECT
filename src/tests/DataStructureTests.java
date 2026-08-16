@@ -7,6 +7,7 @@ import datastructures.Deque;
 import datastructures.DynamicArray;
 import datastructures.DisjointSet;
 import datastructures.Graph;
+import datastructures.RedBlackTree;
 
 public class DataStructureTests {
 
@@ -24,38 +25,236 @@ public class DataStructureTests {
       this.testGraph();
       System.out.println("Data structure tests passed.");
    }
+private void testBinarySearchTree() {
+    BinarySearchTree<Integer> tree = new BinarySearchTree<>();
 
-   private void testBinarySearchTree() {
-      BinarySearchTree tree = new BinarySearchTree();
-      this.assertTrue(tree.isEmpty(), "BST should start empty");
-      tree.add(10);
-      tree.add(5);
-      tree.add(15);
-      this.assertEquals(3, tree.size(), "BST size after inserts");
-      this.assertEquals(5, tree.get(0), "BST inorder first element");
-      this.assertEquals(10, tree.get(1), "BST inorder second element");
-      this.assertEquals(15, tree.get(2), "BST inorder third element");
-      tree.remove(10);
-      this.assertEquals(2, tree.size(), "BST size after removal");
-      this.assertEquals(5, tree.get(0), "BST value after removal at index 0");
-      this.assertEquals(15, tree.get(1), "BST value after removal at index 1");
-   }
+    this.assertTrue(tree.isEmpty(),
+            "BinarySearchTree should start empty");
 
-   private void testBTree() {
-      BTree tree = new BTree();
-      this.assertTrue(tree.isEmpty(), "BTree should start empty");
-      tree.add(30);
-      tree.add(10);
-      tree.add(20);
-      tree.add(40);
-      this.assertEquals(4, tree.size(), "BTree size after inserts");
-      this.assertEquals(10, tree.get(0), "BTree sorted value at index 0");
-      this.assertEquals(20, tree.get(1), "BTree sorted value at index 1");
-      this.assertEquals(30, tree.get(2), "BTree sorted value at index 2");
-      this.assertEquals(40, tree.get(3), "BTree sorted value at index 3");
-      tree.remove(20);
-      this.assertEquals(3, tree.size(), "BTree size after removal");
-   }
+    tree.add(50);
+    tree.add(30);
+    tree.add(70);
+    tree.add(20);
+    tree.add(40);
+
+    this.assertEquals(5, tree.size(),
+            "BinarySearchTree size after inserts");
+
+    this.assertEquals(20, tree.get(0),
+            "BST smallest value");
+
+    this.assertEquals(40, tree.get(2),
+            "BST middle value");
+
+    this.assertEquals(70, tree.get(4),
+            "BST largest value");
+}
+
+private void testBinarySearchTreeRemoval() {
+    BinarySearchTree<Integer> tree = new BinarySearchTree<>();
+
+    tree.add(50);
+    tree.add(30);
+    tree.add(70);
+    tree.add(20);
+    tree.add(40);
+    tree.add(60);
+    tree.add(80);
+
+    tree.remove(30);
+
+    this.assertEquals(6, tree.size(),
+            "BST size after removing a value");
+
+    this.assertEquals(20, tree.get(0),
+            "BST value after removal");
+
+    this.assertEquals(40, tree.get(1),
+            "BST should preserve sorted order after removal");
+
+    tree.remove(999);
+
+    this.assertEquals(6, tree.size(),
+            "BST size should not change when removing missing value");
+}
+
+private void testBinarySearchTreeSet() {
+    BinarySearchTree<Integer> tree = new BinarySearchTree<>();
+
+    tree.add(10);
+    tree.add(20);
+    tree.add(30);
+
+    tree.set(1, 25);
+
+    this.assertEquals(3, tree.size(),
+            "BST size should remain unchanged after set");
+
+    this.assertEquals(10, tree.get(0),
+            "BST first value after set");
+
+    this.assertEquals(25, tree.get(1),
+            "BST set should update value");
+
+    this.assertEquals(30, tree.get(2),
+            "BST last value after set");
+}
+
+private void testBTree() {
+    BTree<Integer> tree = new BTree<>();
+
+    this.assertTrue(tree.isEmpty(),
+            "BTree should start empty");
+
+    tree.add(10);
+    tree.add(20);
+    tree.add(30);
+    tree.add(40);
+    tree.add(50);
+    tree.add(60);
+    tree.add(70);
+
+    this.assertEquals(7, tree.size(),
+            "BTree size after inserts");
+
+    this.assertEquals(10, tree.get(0),
+            "BTree smallest value");
+
+    this.assertEquals(40, tree.get(3),
+            "BTree middle value");
+
+    this.assertEquals(70, tree.get(6),
+            "BTree largest value");
+}
+
+private void testBTreeRemoval() {
+    BTree<Integer> tree = new BTree<>();
+
+    tree.add(10);
+    tree.add(20);
+    tree.add(30);
+    tree.add(40);
+    tree.add(50);
+    tree.add(60);
+    tree.add(70);
+
+    tree.remove(40);
+
+    this.assertEquals(6, tree.size(),
+            "BTree size after removal");
+
+    this.assertEquals(30, tree.get(2),
+            "BTree value before removed item");
+
+    this.assertEquals(50, tree.get(3),
+            "BTree value after removed item");
+
+    tree.remove(999);
+
+    this.assertEquals(6, tree.size(),
+            "BTree size should not change when removing missing value");
+}
+
+private void testBTreeSet() {
+    BTree<Integer> tree = new BTree<>();
+
+    tree.add(10);
+    tree.add(20);
+    tree.add(30);
+    tree.add(40);
+
+    tree.set(1, 25);
+
+    this.assertEquals(4, tree.size(),
+            "BTree size should remain unchanged after set");
+
+    this.assertEquals(10, tree.get(0),
+            "BTree first value after set");
+
+    this.assertEquals(25, tree.get(1),
+            "BTree set should update value");
+
+    this.assertEquals(40, tree.get(3),
+            "BTree last value after set");
+}
+
+private void testRedBlackTree() {
+    RedBlackTree<Integer> tree = new RedBlackTree<>();
+
+    this.assertTrue(tree.isEmpty(),
+            "RedBlackTree should start empty");
+
+    tree.add(50);
+    tree.add(30);
+    tree.add(70);
+    tree.add(20);
+    tree.add(40);
+
+    this.assertEquals(5, tree.size(),
+            "RedBlackTree size after inserts");
+
+    this.assertEquals(20, tree.get(0),
+            "RedBlackTree smallest value");
+
+    this.assertEquals(40, tree.get(2),
+            "RedBlackTree middle value");
+
+    this.assertEquals(70, tree.get(4),
+            "RedBlackTree largest value");
+}
+
+private void testRedBlackTreeRemoval() {
+    RedBlackTree<Integer> tree = new RedBlackTree<>();
+
+    tree.add(50);
+    tree.add(30);
+    tree.add(70);
+    tree.add(20);
+    tree.add(40);
+    tree.add(60);
+    tree.add(80);
+
+    tree.remove(30);
+
+    this.assertEquals(6, tree.size(),
+            "RedBlackTree size after removal");
+
+    this.assertEquals(20, tree.get(0),
+            "RedBlackTree value after removal");
+
+    this.assertEquals(40, tree.get(1),
+            "RedBlackTree should preserve sorted order");
+
+    tree.remove(999);
+
+    this.assertEquals(6, tree.size(),
+            "RedBlackTree size should not change when removing missing value");
+}
+
+private void testRedBlackTreeBalance() {
+    RedBlackTree<Integer> tree = new RedBlackTree<>();
+
+    for (int i = 1; i <= 7; i++) {
+        tree.add(i);
+    }
+
+    this.assertEquals(7, tree.size(),
+            "RedBlackTree size after sorted inserts");
+
+    this.assertEquals(3, tree.height(),
+            "Balanced tree should have height 3 for values 1-7");
+
+    this.assertEquals(1, tree.get(0),
+            "RedBlackTree smallest value");
+
+    this.assertEquals(7, tree.get(6),
+            "RedBlackTree largest value");
+}
+
+
+
+
+
 
    private void testCircularQueue() {
       CircularQueue queue = new CircularQueue();
@@ -163,33 +362,6 @@ public class DataStructureTests {
       this.assertTrue(threwOnMissing, "DisjointSet.union should throw for an element that was never added");
    }
 
-   /*private void testGraph() {
-      Graph<String> graph = new Graph<>();
-      this.assertTrue(graph.isEmpty(), "Graph should start empty");
-
-      graph.add("A");
-      graph.add("B");
-      graph.add("C");
-      this.assertEquals(3, graph.size(), "Graph size after adding vertices");
-      this.assertTrue(!graph.hasEdge("A", "B"), "A and B should not be connected before addEdge");
-
-      graph.addEdge("A", "B");
-      this.assertTrue(graph.hasEdge("A", "B"), "A and B should be connected after addEdge");
-      this.assertTrue(graph.hasEdge("B", "A"), "Graph should be undirected: B to A also connected");
-      this.assertTrue(!graph.hasEdge("A", "C"), "A and C should not be connected yet");
-
-      graph.addEdge("C", "D");
-      this.assertEquals(4, graph.size(), "Graph size after addEdge auto-adds a new vertex");
-      this.assertTrue(graph.hasEdge("C", "D"), "C and D should be connected after addEdge");
-
-      graph.removeEdge("A", "B");
-      this.assertTrue(!graph.hasEdge("A", "B"), "A and B should not be connected after removeEdge");
-      this.assertEquals(4, graph.size(), "Graph size unchanged after removing an edge, not a vertex");
-
-      graph.remove("D");
-      this.assertEquals(3, graph.size(), "Graph size after removing a vertex");
-      this.assertTrue(!graph.hasEdge("C", "D"), "Edges to a removed vertex should be gone too");
-   }*/
 
 
 
