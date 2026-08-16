@@ -1,86 +1,82 @@
-﻿package algorithms;
+package algorithms;
 
 import interfaces.Algorithm;
 import datastructures.Graph;
 import datastructures.Heap;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
+public class PrimAlgorithm<T> implements Algorithm {
 
-/**
- * Prim's algorithm for building a Minimum Spanning Tree (MST).
- *
- * Uses Samuel's Heap<T> (a real min-heap) as the priority queue.
- * Heap requires T to be Comparable, so we wrap each edge in a small
- * Edge class that compares by weight.
- */
-public class PrimAlgorithm implements Algorithm {
-
-    /**
-     * Wraps an edge (from, to, weight) so it can be compared and
-     * stored in the min-heap.
-     */
-    private static class Edge implements Comparable<Edge> {
-        int from;
-        int to;
+    private static class Entry implements Comparable<Entry> {
+        int fromIndex;
+        int toIndex;
         int weight;
 
-        Edge(int from, int to, int weight) {
-            this.from = from;
-            this.to = to;
+        Entry(int fromIndex, int toIndex, int weight) {
+            this.fromIndex = fromIndex;
+            this.toIndex = toIndex;
             this.weight = weight;
         }
 
         @Override
-        public int compareTo(Edge other) {
-            return Integer.compare(this.weight, other.weight);
+        public int compareTo(Entry other) {
+            return Integer.compare(other.weight, this.weight); // reversed: smallest weight first
         }
     }
 
     /**
-     * Builds a Minimum Spanning Tree starting from node 0.
-     *
-     * @param g the graph to build the MST from
-     * @return list of edges in the MST, each as {from, to, weight}
+     * Builds a Minimum Spanning Tree starting from vertex index 0.
+     * @return array of edges in the MST, each as {from, to, weight}
      */
-    public List<int[]> mst(Graph<Integer> g) {
-        List<int[]> mstEdges = new ArrayList<>();
-        List<List<int[]>> adjacencyList = g.getAdjacencyList();
-
-        if (adjacencyList.isEmpty()) {
-            return mstEdges;
+    public int[][] mst(Graph<T> g) {
+        int n = g.size();
+        if (n == 0) {
+            return new int[0][3];
         }
 
-        Set<Integer> visited = new HashSet<>();
-        Heap<Edge> queue = new Heap<>();
+        boolean[] visited = new boolean[n];
+        int[][] mstEdges = new int[n - 1][3];
+        int edgeCount = 0;
 
-        int startNode = 0;
-        visited.add(startNode);
-        addEdgesToQueue(startNode, adjacencyList, queue);
+        Heap<Entry> queue = new Heap<>();
 
-        while (!queue.isEmpty() && visited.size() < adjacencyList.size()) {
-            Edge edge = queue.remove(); // removes and returns the smallest-weight edge
-            int to = edge.to;
+        int startIndex = 0;
+        visited[startIndex] = true;
+        addEdgesToQueue(startIndex, g, queue);
 
-            if (visited.contains(to)) {
-                continue; // both endpoints already in MST, skip
+        while (!queue.isEmpty() && edgeCount < n - 1) {
+            Entry current = queue.remove();
+            int to = current.toIndex;
+
+            if (visited[to]) {
+                continue;
             }
 
-            visited.add(to);
-            mstEdges.add(new int[] { edge.from, edge.to, edge.weight });
-            addEdgesToQueue(to, adjacencyList, queue);
+            visited[to] = true;
+            mstEdges[edgeCount][0] = current.fromIndex;
+            mstEdges[edgeCount][1] = current.toIndex;
+            mstEdges[edgeCount][2] = current.weight;
+            edgeCount++;
+
+            addEdgesToQueue(to, g, queue);
+        }
+
+        if (edgeCount < mstEdges.length) {
+            int[][] trimmed = new int[edgeCount][3];
+            for (int i = 0; i < edgeCount; i++) {
+                trimmed[i] = mstEdges[i];
+            }
+            return trimmed;
         }
 
         return mstEdges;
     }
 
-    private void addEdgesToQueue(int node, List<List<int[]>> adjacencyList, Heap<Edge> queue) {
-        for (int[] edge : adjacencyList.get(node)) {
+    private void addEdgesToQueue(int fromIndex, Graph<T> g, Heap<Entry> queue) {
+        int[][] edges = g.getEdgesFrom(fromIndex);
+        for (int[] edge : edges) {
             int to = edge[0];
             int weight = edge[1];
-            queue.add(new Edge(node, to, weight));
+            queue.add(new Entry(fromIndex, to, weight));
         }
     }
 
