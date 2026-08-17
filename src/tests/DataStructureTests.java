@@ -4,9 +4,10 @@ import datastructures.BTree;
 import datastructures.BinarySearchTree;
 import datastructures.CircularQueue;
 import datastructures.Deque;
-import datastructures.DynamicArray;
 import datastructures.DisjointSet;
+import datastructures.DynamicArray;
 import datastructures.Graph;
+import datastructures.HashTable;
 import datastructures.RedBlackTree;
 
 public class DataStructureTests {
@@ -20,6 +21,9 @@ public class DataStructureTests {
       this.testBTree();
       this.testCircularQueue();
       this.testDeque();
+                this.testHashTableNormal();
+                this.testHashTableBoundary();
+                this.testHashTableCollisionAndResize();
       this.testDynamicArray();
       this.testDisjointSet();
       this.testGraph();
@@ -285,6 +289,59 @@ private void testRedBlackTreeBalance() {
       deque.set(0, 5);
       this.assertEquals(5, deque.get(0), "Deque set updates value");
    }
+
+   private void testHashTableNormal() {
+    HashTable<Integer> table = new HashTable<>();
+    table.put("alice", 90);
+    table.put("bob", 85);
+    table.put("carol", 92);
+
+    assertTrue(table.get("alice") == 90, "get() should return the stored value");
+    assertTrue(table.get("bob") == 85, "get() should return the stored value");
+    assertTrue(table.size() == 3, "size() should count entries");
+
+    table.put("alice", 95); // existing key -> update, not duplicate
+    assertTrue(table.get("alice") == 95, "put() on existing key should update the value");
+    assertTrue(table.size() == 3, "updating a key must not change size()");
+}
+
+private void testHashTableBoundary() {
+    HashTable<Integer> table = new HashTable<>();
+    assertTrue(table.isEmpty(), "new HashTable should be empty");
+    assertTrue(table.get("missing") == null, "get() on absent key should return null");
+
+    table.put("solo", 1);
+    assertTrue(!table.isEmpty(), "table with one entry is not empty");
+    assertTrue(table.size() == 1, "size() should be 1 after one put");
+
+    table.remove("solo");
+    assertTrue(table.size() == 0, "remove() should shrink size");
+    assertTrue(table.get("solo") == null, "removed key should be gone");
+    table.remove("never-there"); // must not throw
+    assertTrue(table.size() == 0, "remove() on absent key should be a no-op");
+}
+
+private void testHashTableCollisionAndResize() {
+    HashTable<Integer> table = new HashTable<>();
+    // "Aa" and "BB" have IDENTICAL hashCode (2112) -> guaranteed same bucket
+    table.put("Aa", 1);
+    table.put("BB", 2);
+    assertTrue(table.get("Aa") == 1 && table.get("BB") == 2,
+            "colliding keys must both stay retrievable (separate chaining)");
+
+    // Force two resizes (16 -> 32 -> 64) and verify nothing is lost
+    for (int i = 0; i < 26; i++) {
+        table.put("key" + i, i);
+    }
+    assertTrue(table.size() == 28, "size() should count all 28 entries");
+
+    boolean allPresent = table.get("Aa") == 1 && table.get("BB") == 2;
+    for (int i = 0; i < 26; i++) {
+        allPresent = allPresent && table.get("key" + i) == i;
+    }
+    assertTrue(allPresent, "every key must survive both resizes");
+}
+
 
    private void testDynamicArray() {
       DynamicArray<Integer> array = new DynamicArray<>();
