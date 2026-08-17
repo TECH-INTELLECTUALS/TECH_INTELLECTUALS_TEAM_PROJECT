@@ -19,15 +19,7 @@ import datastructures.DynamicArray;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * Entry point for the University Campus Service Hub application.
- *
- * Startup sequence:
- *   1. Open the DB connection and create tables if they don't exist
- *   2. Load the 4 CSV files and persist their rows into the DB
- *   3. Build an in-memory weighted Graph of locations/roads for routing
- *   4. Launch the console menu
- */
+
 public class CampusServiceApp {
 
     private static DatabaseConnection dbConnection;
