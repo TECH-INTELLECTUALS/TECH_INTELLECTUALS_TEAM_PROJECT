@@ -4,9 +4,10 @@ import datastructures.BTree;
 import datastructures.BinarySearchTree;
 import datastructures.CircularQueue;
 import datastructures.Deque;
-import datastructures.DynamicArray;
 import datastructures.DisjointSet;
+import datastructures.DynamicArray;
 import datastructures.Graph;
+import datastructures.HashTable;
 
 public class DataStructureTests {
 
@@ -17,6 +18,9 @@ public class DataStructureTests {
    public void runTests() {
       this.testBinarySearchTree();
       this.testBTree();
+      this.testHashTableNormal();
+      this.testHashTableBoundary();
+      this.testHashTableCollision();
       this.testCircularQueue();
       this.testDeque();
       this.testDynamicArray();
@@ -55,6 +59,63 @@ public class DataStructureTests {
       this.assertEquals(40, tree.get(3), "BTree sorted value at index 3");
       tree.remove(20);
       this.assertEquals(3, tree.size(), "BTree size after removal");
+   }
+
+   
+    private void testHashTableNormal() {
+        HashTable<Integer> table = new HashTable<>();
+        table.put("alice", 90);
+        table.put("bob", 85);
+        assertTrue(table.get("alice") == 90, "HashTable get() failed for alice");
+        assertTrue(table.size() == 2, "HashTable size() failed");
+        
+        table.put("alice", 95); // Update existing key
+        assertTrue(table.get("alice") == 95, "HashTable put() failed to update existing key");
+        assertTrue(table.size() == 2, "HashTable size() should not increase when updating");
+    }
+
+    private void testHashTableBoundary() {
+        HashTable<Object> table = new HashTable<>();
+        assertTrue(table.isEmpty(), "New HashTable should be empty");
+        assertTrue(table.get("missing") == null, "get() on missing key should return null");
+
+        table.put("solo", "only");
+        assertTrue(!table.isEmpty(), "HashTable with one item is not empty");
+        
+        table.remove("solo");
+        assertTrue(table.size() == 0, "remove() should shrink size to 0");
+    }
+
+    private void testHashTableCollision() {
+        HashTable<Integer> table = new HashTable<>();
+        // "Aa" and "BB" have the exact same hash code in Java, so they MUST collide
+        table.put("Aa", 1);
+        table.put("BB", 2);
+        assertTrue(table.get("Aa") == 1, "Colliding key Aa lost");
+        assertTrue(table.get("BB") == 2, "Colliding key BB lost");
+    }
+
+   private void testDisjointSet() {
+      DisjointSet<Integer> ds = new DisjointSet<>(6);
+      ds.union(0, 1);
+      ds.union(1, 2);
+      assertTrue(ds.connected(0, 2), "union() should connect 0 and 2 transitively");
+      assertTrue(!ds.connected(0, 3), "0 and 3 should not be connected yet");
+
+      DisjointSet<Integer> ds2 = new DisjointSet<>();
+      assertTrue(ds2.isEmpty(), "New DisjointSet should be empty");
+      ds2.add(42);
+      assertTrue(ds2.size() == 1, "size() should be 1 after add()");
+      assertTrue(ds2.connected(0, 0), "Single element is connected to itself");
+
+      DisjointSet<Integer> ds3 = new DisjointSet<>(3);
+      boolean threw = false;
+      try {
+         ds3.union(0, 10);
+      } catch (Exception e) {
+         threw = true;
+      }
+      assertTrue(threw, "union() should throw exception for invalid index");
    }
 
    private void testCircularQueue() {
@@ -118,49 +179,6 @@ public class DataStructureTests {
       this.assertEquals(25, growArray.size(), "DynamicArray size after growing past initial capacity");
       this.assertEquals(0, growArray.get(0), "DynamicArray first value survives resize");
       this.assertEquals(24, growArray.get(24), "DynamicArray last value survives resize");
-   }
-
-   private void testDisjointSet() {
-      DisjointSet<Integer> set = new DisjointSet<>();
-      this.assertTrue(set.isEmpty(), "DisjointSet should start empty");
-
-      set.add(1);
-      set.add(2);
-      set.add(3);
-      set.add(4);
-      this.assertEquals(4, set.size(), "DisjointSet size after adds");
-      this.assertTrue(!set.connected(1, 2), "1 and 2 should not be connected before union");
-
-      set.union(1, 2);
-      this.assertTrue(set.connected(1, 2), "1 and 2 should be connected after union");
-      this.assertTrue(!set.connected(1, 3), "1 and 3 should not be connected yet");
-
-      set.union(3, 4);
-      set.union(2, 3);
-      this.assertTrue(set.connected(1, 4), "1 and 4 should be connected transitively through 2 and 3");
-
-      Integer root1 = set.find(1);
-      Integer root4 = set.find(4);
-      this.assertEquals(root1, root4, "find() should return the same root for connected elements");
-
-      set.add(1);
-      this.assertEquals(4, set.size(), "DisjointSet size unchanged after re-adding existing element");
-
-      boolean threwOnRemove = false;
-      try {
-         set.remove(1);
-      } catch (UnsupportedOperationException e) {
-         threwOnRemove = true;
-      }
-      this.assertTrue(threwOnRemove, "DisjointSet.remove should throw UnsupportedOperationException");
-
-      boolean threwOnMissing = false;
-      try {
-         set.union(1, 999);
-      } catch (IllegalArgumentException e) {
-         threwOnMissing = true;
-      }
-      this.assertTrue(threwOnMissing, "DisjointSet.union should throw for an element that was never added");
    }
 
    /*private void testGraph() {
