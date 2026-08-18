@@ -15,16 +15,33 @@ public class DataStructureTests {
       new DataStructureTests().runTests();
    }
 
+
+
+
+
+
    public void runTests() {
-      this.testBinarySearchTree();
-      this.testBTree();
-      this.testCircularQueue();
-      this.testDeque();
-      this.testDynamicArray();
-      this.testDisjointSet();
-      this.testGraph();
-      System.out.println("Data structure tests passed.");
-   }
+    this.testBinarySearchTree();
+    this.testBinarySearchTreeRemoval();
+    this.testBinarySearchTreeSet();
+    this.testBTree();
+    this.testBTreeRemoval();
+    this.testBTreeSet();
+    this.testRedBlackTree();
+    this.testRedBlackTreeRemoval();
+    this.testRedBlackTreeBalance();
+    this.testCircularQueue();
+    this.testDeque();
+    this.testDynamicArray();
+    this.testDisjointSet();
+    this.testGraph();
+    System.out.println("Data structure tests passed.");
+}
+
+
+
+
+
 private void testBinarySearchTree() {
     BinarySearchTree<Integer> tree = new BinarySearchTree<>();
 
