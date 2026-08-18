@@ -1,0 +1,66 @@
+﻿location_id,name,area,location_type,latitude,Longitude
+L001,Balme Library,Legon,Academic,5.651780749,-0.18706864
+L002,Great Hall,Legon,Academic,5.650705585,-0.196263203
+L003,College of Humanities,Legon,Academic,5.653839454,-0.182079061
+L004,Computer Science Department,Legon,Academic,5.654617177,-0.183849503
+L005,Business School,Legon,Academic,5.658818732,-0.177573232
+L006,Geography & Resource Development,Legon,Academic,5.651100215,-0.183225917
+L007,School of Law,Legon,Academic,5.654455957,-0.183293803
+L008,Department of Chemistry,Legon,Academic,5.652712943,-0.185284282
+L009,Department of Home Science,Legon,Academic,5.652847226,-0.184440125
+L010,Department of Political Science,Legon,Academic,5.654712146,-0.186418203
+L011,Department of Psychology,Legon,Academic,5.655136878,-0.186612247
+L012,Department of Information Studies,Legon,Academic,5.655095182,-0.187294025
+L013,Department of Animal Biology,Legon,Academic,5.653433885,-0.187532667
+L014,Department of Marine and Fisheries Sciences,Legon,Academic,5.65372733,-0.188471031
+L015,Department of Educational Studies and Leadership (DESL),Legon,Academic,5.652817523,-0.181225037
+L016,Department of Teacher Education,Legon,Academic,5.652629356,-0.181016599
+L017,International Programmes Office,Legon,Academic,5.653605858,-0.182044729
+L018,JQB Lecture Hall,Legon,Academic,5.652258359,-0.181752171
+L019,Institute of Africa Studies,Legon,Academic,5.649331352,-0.181108773
+L020,Department of Adult Education,Legon,Academic,5.651585168,-0.181141478
+L021,Department of Archaeology,Legon,Academic,5.651908493,-0.181305431
+L022,School of Continuing and Distance Education,Legon,Academic,5.650906567,-0.181140863
+L023,Department of Geology,Legon,Academic,5.651204805,-0.18447165
+L024,Centre for International Affairs,Legon,Academic,5.652200105,-0.183922269
+L025,Department of Physics,Legon,Academic,5.651481214,-0.186079249
+L026,Department of Plant and Environmental Biology,Legon,Academic,5.653830115,-0.186233272
+L027,School of Pharmacy,Legon,Academic,5.653988339,-0.189272523
+L028,Department of Biochemistry,Legon,Academic,5.654802454,-0.189473687
+L029,School of Nursing and Midwifery,Legon,Academic,5.653554846,-0.190226439
+L030,French Department,Legon,Academic,5.650873023,-0.188740369
+L031,Legon Hall,Legon,Residence,5.649963371,-0.188415774
+L032,Commonwealth Hall,Legon,Residence,5.650750709,-0.191384097
+L033,Volta Hall,Legon,Residence,5.652014432,-0.189819085
+L034,Akuafo Hall,Legon,Residence,5.650428978,-0.185703326
+L035,Akuafo Hall Annex C,Legon,Residence,5.647516617,-0.185317811
+L036,Mensah Sarbah Hall,Legon,Residence,5.645506916,-0.186150401
+L037,Vikings Hostel,Legon,Residence,5.644070197,-0.185966575
+L038,Legon Hall Annex A,Legon,Residence,5.647972619,-0.188394823
+L039,Mensah Sarbah Annex B,Legon,Residence,5.644824446,-0.185412201
+L040,Valco Trust Hostel ,Legon,Residence,5.644749481,-0.186857837
+L041,Old Pentagon Blocks,Legon,Residence,5.656589631,-0.181348222
+L042,Pent Hostel Block A,Legon,Residence,5.657268134,-0.181877314
+L043,Pent Hostel Block B,Legon,Residence,5.658703673,-0.181823265
+L044,Pent Hostel Block C,Legon,Residence,5.658090145,-0.181269606
+L045,Central Cafeteria,Legon,Service,5.646852858,-0.186792154
+L046,Legon Hospital,Legon,Service,5.651082827,-0.177965061
+L047,Sports Complex,Legon,Service,5.648203126,-0.187575981
+L048,University Banking Square,Legon,Service,5.642588405,-0.185721723
+L049,Ghana Korea Information Access Centre,Legon,Service,5.65206366,-0.18775925
+L050,ECOWAS Coastal & Marine Resources Management Centre,Legon,Service,5.652807178,-0.183927382
+L051,University of Ghana Basic School,Legon,Education,5.642711741,-0.188019652
+L052,SRC Union Building,Legon,Administration,5.646988616,-0.187658867
+L053,UG Sports Directorate,Legon,Sports,5.639735707,-0.181459302
+L054,University of Ghana Guest Centre,Legon,Accommodation,5.644926931,-0.189686498
+L055,University of Ghana Staff Village,Legon,Residence,5.653224636,-0.175061833
+L056,Department of Mathematics,Legon,Academic,5.653873911,-0.184490286
+L057,University of Ghana Balme Library Car Park,Legon,Parking,5.651603209,-0.187532367
+L058,Legon Botanical Gardens,Legon,Recreation,5.666982512,-0.187748693
+L059,UG Registry,Legon,Administration,5.650166558,-0.195411844
+L060,University of Ghana Post Office,Legon,Service,5.650866955,-0.187770461
+L061,Elizabeth Frances Sey Hall,Legon,Academic,5.635973723,-0.18759487
+L062,Legon Campus Security Office,Legon,Security,5.650683711,-0.181081178
+L063,University of Ghana Medical Centre,Legon,Hospital,5.632350253,-0.185925583
+L064,Legon Taxi Station,Legon,Transport,5.640966808,-0.178954481
+L065,University of Ghana Stadium,Legon,Sports,5.638896055,-0.180228434
