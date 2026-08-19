@@ -5,18 +5,22 @@ import datastructures.BinarySearchTree;
 import datastructures.CircularQueue;
 import datastructures.Deque;
 import datastructures.DisjointSet;
-import datastructures.DisjointSet;
 import datastructures.DynamicArray;
 import datastructures.Graph;
 import datastructures.HashTable;
 import datastructures.RedBlackTree;
-import datastructures.HashTable;
+
 
 public class DataStructureTests {
 
    public static void main(String[] args) {
       new DataStructureTests().runTests();
    }
+
+
+
+
+
 
    public void runTests() {
       this.testBinarySearchTree();
