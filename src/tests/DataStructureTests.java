@@ -5,8 +5,12 @@ import datastructures.BinarySearchTree;
 import datastructures.CircularQueue;
 import datastructures.Deque;
 import datastructures.DisjointSet;
+import datastructures.DisjointSet;
 import datastructures.DynamicArray;
 import datastructures.Graph;
+import datastructures.HashTable;
+import datastructures.RedBlackTree;
+import datastructures.HashTable;
 
 public class DataStructureTests {
 
@@ -105,6 +109,161 @@ private void testBinarySearchTreeSet() {
             "BST last value after set");
 }
 
+private void testBTree() {
+    BTree<Integer> tree = new BTree<>();
+
+    this.assertTrue(tree.isEmpty(),
+            "BTree should start empty");
+
+    tree.add(10);
+    tree.add(20);
+    tree.add(30);
+    tree.add(40);
+    tree.add(50);
+    tree.add(60);
+    tree.add(70);
+
+    this.assertEquals(7, tree.size(),
+            "BTree size after inserts");
+
+    this.assertEquals(10, tree.get(0),
+            "BTree smallest value");
+
+    this.assertEquals(40, tree.get(3),
+            "BTree middle value");
+
+    this.assertEquals(70, tree.get(6),
+            "BTree largest value");
+}
+
+private void testBTreeRemoval() {
+    BTree<Integer> tree = new BTree<>();
+
+    tree.add(10);
+    tree.add(20);
+    tree.add(30);
+    tree.add(40);
+    tree.add(50);
+    tree.add(60);
+    tree.add(70);
+
+    tree.remove(40);
+
+    this.assertEquals(6, tree.size(),
+            "BTree size after removal");
+
+    this.assertEquals(30, tree.get(2),
+            "BTree value before removed item");
+
+    this.assertEquals(50, tree.get(3),
+            "BTree value after removed item");
+
+    tree.remove(999);
+
+    this.assertEquals(6, tree.size(),
+            "BTree size should not change when removing missing value");
+}
+
+private void testBTreeSet() {
+    BTree<Integer> tree = new BTree<>();
+
+    tree.add(10);
+    tree.add(20);
+    tree.add(30);
+    tree.add(40);
+
+    tree.set(1, 25);
+
+    this.assertEquals(4, tree.size(),
+            "BTree size should remain unchanged after set");
+
+    this.assertEquals(10, tree.get(0),
+            "BTree first value after set");
+
+    this.assertEquals(25, tree.get(1),
+            "BTree set should update value");
+
+    this.assertEquals(40, tree.get(3),
+            "BTree last value after set");
+}
+
+private void testRedBlackTree() {
+    RedBlackTree<Integer> tree = new RedBlackTree<>();
+
+    this.assertTrue(tree.isEmpty(),
+            "RedBlackTree should start empty");
+
+    tree.add(50);
+    tree.add(30);
+    tree.add(70);
+    tree.add(20);
+    tree.add(40);
+
+    this.assertEquals(5, tree.size(),
+            "RedBlackTree size after inserts");
+
+    this.assertEquals(20, tree.get(0),
+            "RedBlackTree smallest value");
+
+    this.assertEquals(40, tree.get(2),
+            "RedBlackTree middle value");
+
+    this.assertEquals(70, tree.get(4),
+            "RedBlackTree largest value");
+}
+
+private void testRedBlackTreeRemoval() {
+    RedBlackTree<Integer> tree = new RedBlackTree<>();
+
+    tree.add(50);
+    tree.add(30);
+    tree.add(70);
+    tree.add(20);
+    tree.add(40);
+    tree.add(60);
+    tree.add(80);
+
+    tree.remove(30);
+
+    this.assertEquals(6, tree.size(),
+            "RedBlackTree size after removal");
+
+    this.assertEquals(20, tree.get(0),
+            "RedBlackTree value after removal");
+
+    this.assertEquals(40, tree.get(1),
+            "RedBlackTree should preserve sorted order");
+
+    tree.remove(999);
+
+    this.assertEquals(6, tree.size(),
+            "RedBlackTree size should not change when removing missing value");
+}
+
+private void testRedBlackTreeBalance() {
+    RedBlackTree<Integer> tree = new RedBlackTree<>();
+
+    for (int i = 1; i <= 7; i++) {
+        tree.add(i);
+    }
+
+    this.assertEquals(7, tree.size(),
+            "RedBlackTree size after sorted inserts");
+
+    this.assertEquals(3, tree.height(),
+            "Balanced tree should have height 3 for values 1-7");
+
+    this.assertEquals(1, tree.get(0),
+            "RedBlackTree smallest value");
+
+    this.assertEquals(7, tree.get(6),
+            "RedBlackTree largest value");
+}
+
+
+
+
+
    private void testBTree() {
       BTree tree = new BTree();
       this.assertTrue(tree.isEmpty(), "BTree should start empty");
@@ -119,6 +278,63 @@ private void testBinarySearchTreeSet() {
       this.assertEquals(40, tree.get(3), "BTree sorted value at index 3");
       tree.remove(20);
       this.assertEquals(3, tree.size(), "BTree size after removal");
+   }
+
+   
+    private void testHashTableNormal() {
+        HashTable<Integer> table = new HashTable<>();
+        table.put("alice", 90);
+        table.put("bob", 85);
+        assertTrue(table.get("alice") == 90, "HashTable get() failed for alice");
+        assertTrue(table.size() == 2, "HashTable size() failed");
+        
+        table.put("alice", 95); // Update existing key
+        assertTrue(table.get("alice") == 95, "HashTable put() failed to update existing key");
+        assertTrue(table.size() == 2, "HashTable size() should not increase when updating");
+    }
+
+    private void testHashTableBoundary() {
+        HashTable<Object> table = new HashTable<>();
+        assertTrue(table.isEmpty(), "New HashTable should be empty");
+        assertTrue(table.get("missing") == null, "get() on missing key should return null");
+
+        table.put("solo", "only");
+        assertTrue(!table.isEmpty(), "HashTable with one item is not empty");
+        
+        table.remove("solo");
+        assertTrue(table.size() == 0, "remove() should shrink size to 0");
+    }
+
+    private void testHashTableCollision() {
+        HashTable<Integer> table = new HashTable<>();
+        // "Aa" and "BB" have the exact same hash code in Java, so they MUST collide
+        table.put("Aa", 1);
+        table.put("BB", 2);
+        assertTrue(table.get("Aa") == 1, "Colliding key Aa lost");
+        assertTrue(table.get("BB") == 2, "Colliding key BB lost");
+    }
+
+   private void testDisjointSet() {
+      DisjointSet<Integer> ds = new DisjointSet<>(6);
+      ds.union(0, 1);
+      ds.union(1, 2);
+      assertTrue(ds.connected(0, 2), "union() should connect 0 and 2 transitively");
+      assertTrue(!ds.connected(0, 3), "0 and 3 should not be connected yet");
+
+      DisjointSet<Integer> ds2 = new DisjointSet<>();
+      assertTrue(ds2.isEmpty(), "New DisjointSet should be empty");
+      ds2.add(42);
+      assertTrue(ds2.size() == 1, "size() should be 1 after add()");
+      assertTrue(ds2.connected(0, 0), "Single element is connected to itself");
+
+      DisjointSet<Integer> ds3 = new DisjointSet<>(3);
+      boolean threw = false;
+      try {
+         ds3.union(0, 10);
+      } catch (Exception e) {
+         threw = true;
+      }
+      assertTrue(threw, "union() should throw exception for invalid index");
    }
 
    private void testCircularQueue() {
