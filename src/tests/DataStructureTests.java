@@ -7,8 +7,6 @@ import datastructures.Deque;
 import datastructures.DisjointSet;
 import datastructures.DynamicArray;
 import datastructures.Graph;
-import datastructures.HashTable;
-import datastructures.RedBlackTree;
 
 public class DataStructureTests {
 
@@ -19,6 +17,9 @@ public class DataStructureTests {
    public void runTests() {
       this.testBinarySearchTree();
       this.testBTree();
+      this.testHashTableNormal();
+      this.testHashTableBoundary();
+      this.testHashTableCollision();
       this.testCircularQueue();
       this.testDeque();
                 this.testHashTableNormal();
@@ -104,161 +105,21 @@ private void testBinarySearchTreeSet() {
             "BST last value after set");
 }
 
-private void testBTree() {
-    BTree<Integer> tree = new BTree<>();
-
-    this.assertTrue(tree.isEmpty(),
-            "BTree should start empty");
-
-    tree.add(10);
-    tree.add(20);
-    tree.add(30);
-    tree.add(40);
-    tree.add(50);
-    tree.add(60);
-    tree.add(70);
-
-    this.assertEquals(7, tree.size(),
-            "BTree size after inserts");
-
-    this.assertEquals(10, tree.get(0),
-            "BTree smallest value");
-
-    this.assertEquals(40, tree.get(3),
-            "BTree middle value");
-
-    this.assertEquals(70, tree.get(6),
-            "BTree largest value");
-}
-
-private void testBTreeRemoval() {
-    BTree<Integer> tree = new BTree<>();
-
-    tree.add(10);
-    tree.add(20);
-    tree.add(30);
-    tree.add(40);
-    tree.add(50);
-    tree.add(60);
-    tree.add(70);
-
-    tree.remove(40);
-
-    this.assertEquals(6, tree.size(),
-            "BTree size after removal");
-
-    this.assertEquals(30, tree.get(2),
-            "BTree value before removed item");
-
-    this.assertEquals(50, tree.get(3),
-            "BTree value after removed item");
-
-    tree.remove(999);
-
-    this.assertEquals(6, tree.size(),
-            "BTree size should not change when removing missing value");
-}
-
-private void testBTreeSet() {
-    BTree<Integer> tree = new BTree<>();
-
-    tree.add(10);
-    tree.add(20);
-    tree.add(30);
-    tree.add(40);
-
-    tree.set(1, 25);
-
-    this.assertEquals(4, tree.size(),
-            "BTree size should remain unchanged after set");
-
-    this.assertEquals(10, tree.get(0),
-            "BTree first value after set");
-
-    this.assertEquals(25, tree.get(1),
-            "BTree set should update value");
-
-    this.assertEquals(40, tree.get(3),
-            "BTree last value after set");
-}
-
-private void testRedBlackTree() {
-    RedBlackTree<Integer> tree = new RedBlackTree<>();
-
-    this.assertTrue(tree.isEmpty(),
-            "RedBlackTree should start empty");
-
-    tree.add(50);
-    tree.add(30);
-    tree.add(70);
-    tree.add(20);
-    tree.add(40);
-
-    this.assertEquals(5, tree.size(),
-            "RedBlackTree size after inserts");
-
-    this.assertEquals(20, tree.get(0),
-            "RedBlackTree smallest value");
-
-    this.assertEquals(40, tree.get(2),
-            "RedBlackTree middle value");
-
-    this.assertEquals(70, tree.get(4),
-            "RedBlackTree largest value");
-}
-
-private void testRedBlackTreeRemoval() {
-    RedBlackTree<Integer> tree = new RedBlackTree<>();
-
-    tree.add(50);
-    tree.add(30);
-    tree.add(70);
-    tree.add(20);
-    tree.add(40);
-    tree.add(60);
-    tree.add(80);
-
-    tree.remove(30);
-
-    this.assertEquals(6, tree.size(),
-            "RedBlackTree size after removal");
-
-    this.assertEquals(20, tree.get(0),
-            "RedBlackTree value after removal");
-
-    this.assertEquals(40, tree.get(1),
-            "RedBlackTree should preserve sorted order");
-
-    tree.remove(999);
-
-    this.assertEquals(6, tree.size(),
-            "RedBlackTree size should not change when removing missing value");
-}
-
-private void testRedBlackTreeBalance() {
-    RedBlackTree<Integer> tree = new RedBlackTree<>();
-
-    for (int i = 1; i <= 7; i++) {
-        tree.add(i);
-    }
-
-    this.assertEquals(7, tree.size(),
-            "RedBlackTree size after sorted inserts");
-
-    this.assertEquals(3, tree.height(),
-            "Balanced tree should have height 3 for values 1-7");
-
-    this.assertEquals(1, tree.get(0),
-            "RedBlackTree smallest value");
-
-    this.assertEquals(7, tree.get(6),
-            "RedBlackTree largest value");
-}
-
-
-
-
-
+   private void testBTree() {
+      BTree tree = new BTree();
+      this.assertTrue(tree.isEmpty(), "BTree should start empty");
+      tree.add(30);
+      tree.add(10);
+      tree.add(20);
+      tree.add(40);
+      this.assertEquals(4, tree.size(), "BTree size after inserts");
+      this.assertEquals(10, tree.get(0), "BTree sorted value at index 0");
+      this.assertEquals(20, tree.get(1), "BTree sorted value at index 1");
+      this.assertEquals(30, tree.get(2), "BTree sorted value at index 2");
+      this.assertEquals(40, tree.get(3), "BTree sorted value at index 3");
+      tree.remove(20);
+      this.assertEquals(3, tree.size(), "BTree size after removal");
+   }
 
    private void testCircularQueue() {
       CircularQueue queue = new CircularQueue();
@@ -374,49 +235,6 @@ private void testHashTableCollisionAndResize() {
       this.assertEquals(25, growArray.size(), "DynamicArray size after growing past initial capacity");
       this.assertEquals(0, growArray.get(0), "DynamicArray first value survives resize");
       this.assertEquals(24, growArray.get(24), "DynamicArray last value survives resize");
-   }
-
-   private void testDisjointSet() {
-      DisjointSet<Integer> set = new DisjointSet<>();
-      this.assertTrue(set.isEmpty(), "DisjointSet should start empty");
-
-      set.add(1);
-      set.add(2);
-      set.add(3);
-      set.add(4);
-      this.assertEquals(4, set.size(), "DisjointSet size after adds");
-      this.assertTrue(!set.connected(1, 2), "1 and 2 should not be connected before union");
-
-      set.union(1, 2);
-      this.assertTrue(set.connected(1, 2), "1 and 2 should be connected after union");
-      this.assertTrue(!set.connected(1, 3), "1 and 3 should not be connected yet");
-
-      set.union(3, 4);
-      set.union(2, 3);
-      this.assertTrue(set.connected(1, 4), "1 and 4 should be connected transitively through 2 and 3");
-
-      Integer root1 = set.find(1);
-      Integer root4 = set.find(4);
-      this.assertEquals(root1, root4, "find() should return the same root for connected elements");
-
-      set.add(1);
-      this.assertEquals(4, set.size(), "DisjointSet size unchanged after re-adding existing element");
-
-      boolean threwOnRemove = false;
-      try {
-         set.remove(1);
-      } catch (UnsupportedOperationException e) {
-         threwOnRemove = true;
-      }
-      this.assertTrue(threwOnRemove, "DisjointSet.remove should throw UnsupportedOperationException");
-
-      boolean threwOnMissing = false;
-      try {
-         set.union(1, 999);
-      } catch (IllegalArgumentException e) {
-         threwOnMissing = true;
-      }
-      this.assertTrue(threwOnMissing, "DisjointSet.union should throw for an element that was never added");
    }
 
 

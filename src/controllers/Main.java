@@ -1,15 +1,9 @@
 package controllers;
 
-/**
- * Alternative main controller entry point for application startup.
- */
-public class Main {
+import app.CampusServiceApp;
 
-    /**
-     * Main entry method for launch scenarios.
-     * @param args command line arguments
-     */
+public class Main {
     public static void main(String[] args) {
-        // TODO: Bootstrap the CampusServiceController
+        CampusServiceApp.main(args);
     }
 }
