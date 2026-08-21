@@ -41,13 +41,13 @@ public class CampusServiceApp {
         System.out.println("Goodbye.");
     }
 
-    // --- Startup steps ---
+   
 
     private static void setUpDatabase() {
         System.out.println("Connecting to database...");
         dbConnection = new DatabaseConnection();
         DatabaseManager dbManager = new DatabaseManager(dbConnection);
-        dbManager.initialize(); // creates tables if they don't exist
+        dbManager.initialize(); 
 
         locationRepository = new LocationRepository(dbConnection);
         roadRepository = new RoadRepository(dbConnection);
@@ -103,7 +103,7 @@ public class CampusServiceApp {
         System.out.println("  Graph built: " + campusGraph.size() + " locations connected.");
     }
 
-    // --- Menu ---
+
 
     private static void runMenu() {
         Scanner scanner = new Scanner(System.in);
@@ -210,7 +210,7 @@ public class CampusServiceApp {
 
         DynamicArray<ServiceRequest> pending = new DynamicArray<>();
         for (ServiceRequest request : allRequests) {
-            if ("NEW".equals(request.getStatus())) {
+            if ("PENDING".equals(request.getStatus())) {
                 pending.add(request);
             }
         }
