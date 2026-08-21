@@ -8,6 +8,9 @@ import datastructures.DisjointSet;
 import datastructures.DynamicArray;
 import datastructures.Graph;
 import datastructures.HashTable;
+import datastructures.Heap;
+import datastructures.PriorityQueue;
+import datastructures.Queue;
 import datastructures.RedBlackTree;
 
 public class DataStructureTests {
@@ -45,7 +48,19 @@ public class DataStructureTests {
         this.testDeque();
         this.testDynamicArray();
         this.testGraph();
+         // --- Queue / Heap / PriorityQueue tests ---
+        this.testQueueNormal();
+        this.testQueueBoundary();
+        this.testQueueInvalid();
 
+        this.testHeapNormal();
+        this.testHeapBoundary();
+        this.testHeapInvalid();
+
+        this.testPriorityQueueNormal();
+        this.testPriorityQueueBoundary();
+        this.testPriorityQueueInvalid();
+        
         // --- DisjointSet ---
         this.testDisjointSetEmpty();
         this.testDisjointSetConstructor();
@@ -972,6 +987,244 @@ public class DataStructureTests {
         this.assertTrue(setThrew,
                 "set() should throw UnsupportedOperationException");
     }
+
+
+// ==================== Queue Tests ====================
+
+private void testQueueNormal() {
+    Queue<String> q = new Queue<>();
+    this.assertTrue(q.isEmpty(), "Queue should start empty");
+
+    q.add("a");
+    q.add("b");
+    q.add("c");
+
+    this.assertEquals(3, q.size(), "Queue size after adds");
+    this.assertEquals("a", q.peek(), "Queue peek returns front element");
+    this.assertEquals("a", q.dequeue(), "dequeue returns and removes front element");
+    this.assertEquals(2, q.size(), "Queue size after one dequeue");
+    this.assertEquals("b", q.get(0), "get(0) after dequeue");
+    q.set(0, "bb");
+    this.assertEquals("bb", q.get(0), "set(0) updates element");
+    q.remove("bb");
+    this.assertEquals(1, q.size(), "remove(item) should remove matching element");
+}
+
+private void testQueueBoundary() {
+    Queue<Integer> q = new Queue<>();
+    // DEFAULT_CAPACITY is 16; fill to capacity
+    for (int i = 0; i < 16; i++) {
+        q.add(i);
+    }
+    this.assertEquals(16, q.size(), "Queue size at capacity");
+
+    boolean addThrew = false;
+    try {
+        q.add(99);
+    } catch (IllegalStateException e) {
+        addThrew = true;
+    }
+    this.assertTrue(addThrew, "Adding past capacity should throw IllegalStateException");
+
+    // Drain the queue
+    for (int i = 0; i < 16; i++) {
+        q.dequeue();
+    }
+    this.assertTrue(q.isEmpty(), "Queue should be empty after draining");
+}
+
+private void testQueueInvalid() {
+    Queue<Integer> q = new Queue<>();
+
+    boolean nullAddThrew = false;
+    try {
+        q.add(null);
+    } catch (IllegalArgumentException e) {
+        nullAddThrew = true;
+    }
+    this.assertTrue(nullAddThrew, "add(null) should throw IllegalArgumentException");
+
+    boolean dequeueEmptyThrew = false;
+    try {
+        q.dequeue();
+    } catch (IllegalStateException e) {
+        dequeueEmptyThrew = true;
+    }
+    this.assertTrue(dequeueEmptyThrew, "dequeue() on empty queue should throw IllegalStateException");
+
+    boolean peekEmptyThrew = false;
+    try {
+        q.peek();
+    } catch (IllegalStateException e) {
+        peekEmptyThrew = true;
+    }
+    this.assertTrue(peekEmptyThrew, "peek() on empty queue should throw IllegalStateException");
+
+    q.add(1);
+    boolean getInvalidThrew = false;
+    try {
+        q.get(5);
+    } catch (IndexOutOfBoundsException e) {
+        getInvalidThrew = true;
+    }
+    this.assertTrue(getInvalidThrew, "get(invalid) should throw IndexOutOfBoundsException");
+
+    boolean setNullThrew = false;
+    try {
+        q.set(0, null);
+    } catch (IllegalArgumentException e) {
+        setNullThrew = true;
+    }
+    this.assertTrue(setNullThrew, "set(index, null) should throw IllegalArgumentException");
+}
+
+// ==================== Heap Tests ====================
+
+private void testHeapNormal() {
+    Heap<Integer> h = new Heap<>();
+    this.assertTrue(h.isEmpty(), "Heap should start empty");
+
+    h.add(10);
+    h.add(5);
+    h.add(20);
+
+    this.assertEquals(3, h.size(), "Heap size after adds");
+    this.assertEquals(20, h.peek(), "peek() returns maximum element for max-heap");
+    this.assertEquals(20, h.remove(), "remove() returns and removes max element");
+    this.assertEquals(2, h.size(), "Heap size after remove");
+
+    h.add(15);
+    this.assertEquals(15, h.peek(), "peek() after further inserts");
+
+    h.remove((Integer) 10);
+    this.assertEquals(2, h.size(), "remove(item) should remove specific element");
+}
+
+private void testHeapBoundary() {
+    Heap<Integer> h = new Heap<>();
+    // DEFAULT_CAPACITY is 10; force resize by adding more elements
+    for (int i = 0; i < 15; i++) {
+        h.add(i);
+    }
+    this.assertEquals(15, h.size(), "Heap size after growing past initial capacity");
+    this.assertEquals(14, h.peek(), "peek() should reflect max after many inserts");
+
+    // Remove all elements to ensure stability after resize
+    int last = h.remove();
+    while (!h.isEmpty()) {
+        last = h.remove();
+    }
+    this.assertTrue(h.isEmpty(), "Heap should be empty after removing all elements");
+}
+
+private void testHeapInvalid() {
+    Heap<Integer> h = new Heap<>();
+
+    boolean nullAddThrew = false;
+    try {
+        h.add(null);
+    } catch (IllegalArgumentException e) {
+        nullAddThrew = true;
+    }
+    this.assertTrue(nullAddThrew, "add(null) should throw IllegalArgumentException");
+
+    boolean removeEmptyThrew = false;
+    try {
+        h.remove();
+    } catch (IllegalStateException e) {
+        removeEmptyThrew = true;
+    }
+    this.assertTrue(removeEmptyThrew, "remove() on empty heap should throw IllegalStateException");
+
+    h.add(1);
+    boolean getInvalidThrew = false;
+    try {
+        h.get(5);
+    } catch (IndexOutOfBoundsException e) {
+        getInvalidThrew = true;
+    }
+    this.assertTrue(getInvalidThrew, "get(invalid) should throw IndexOutOfBoundsException");
+
+    boolean setNullThrew = false;
+    try {
+        h.set(0, null);
+    } catch (IllegalArgumentException e) {
+        setNullThrew = true;
+    }
+    this.assertTrue(setNullThrew, "set(index, null) should throw IllegalArgumentException");
+}
+
+// ==================== PriorityQueue Tests ====================
+
+private void testPriorityQueueNormal() {
+    PriorityQueue<String> pq = new PriorityQueue<>();
+    this.assertTrue(pq.isEmpty(), "PriorityQueue should start empty");
+
+    pq.add("low", 1);
+    pq.add("med", 5);
+    pq.add("high", 10);
+
+    this.assertEquals(3, pq.size(), "PriorityQueue size after adds");
+    this.assertEquals("high", pq.peek(), "peek() returns highest priority element");
+    this.assertEquals(10, pq.peekPriority(), "peekPriority() returns priority of top element");
+
+    this.assertEquals("high", pq.poll(), "poll() returns and removes highest priority");
+    this.assertEquals(2, pq.size(), "size() after poll");
+
+    pq.add("newHigh", 7);
+    pq.updatePriority("low", 9); // promote low
+    this.assertTrue(pq.contains("low"), "contains() should find promoted element");
+    this.assertEquals("low", pq.peek(), "promoted element should become new top");
+}
+
+private void testPriorityQueueBoundary() {
+    PriorityQueue<Integer> pq = new PriorityQueue<>();
+    // DEFAULT_CAPACITY is 10; force resize
+    for (int i = 0; i < 15; i++) {
+        pq.add(i, i);
+    }
+    this.assertEquals(15, pq.size(), "PriorityQueue size after growing past initial capacity");
+    this.assertEquals(14, pq.peek(), "peek() should be highest priority after many inserts");
+
+    // Poll a few and ensure order
+    int first = pq.poll();
+    int second = pq.poll();
+    this.assertTrue(first > second, "polled elements should be in descending priority order");
+}
+
+private void testPriorityQueueInvalid() {
+    PriorityQueue<Integer> pq = new PriorityQueue<>();
+
+    boolean nullAddThrew = false;
+    try {
+        pq.add(null);
+    } catch (IllegalArgumentException e) {
+        nullAddThrew = true;
+    }
+    this.assertTrue(nullAddThrew, "add(null) should throw IllegalArgumentException");
+
+    boolean pollEmptyThrew = false;
+    try {
+        pq.poll();
+    } catch (IllegalStateException e) {
+        pollEmptyThrew = true;
+    }
+    this.assertTrue(pollEmptyThrew, "poll() on empty priority queue should throw IllegalStateException");
+
+    boolean peekEmptyThrew = false;
+    try {
+        pq.peek();
+    } catch (IllegalStateException e) {
+        peekEmptyThrew = true;
+    }
+    this.assertTrue(peekEmptyThrew, "peek() on empty priority queue should throw IllegalStateException");
+
+    this.assertTrue(!pq.contains(null), "contains(null) should return false");
+}
+
+
+
+
 
     // ==================== Assertion Helpers ====================
 
