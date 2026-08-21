@@ -15,6 +15,9 @@ import algorithms.QuickSort;
 import algorithms.SelectionSort;
 import java.util.Arrays;
 
+import algorithms.BreadthFirstSearch;
+import algorithms.DepthFirstSearch;
+
 /**
  * Test suite for algorithm classes.
  */
@@ -38,6 +41,14 @@ public class AlgorithmTests {
         // Dzifa's graph algorithm tests (original)
         // =========================================================
         testDijkstraPrimKruskal();
+
+
+    testBFSNormal();
+    testBFSDisconnected();
+    testBFSInvalidStart();
+    testDFSNormal();
+    testDFSDisconnected();
+    testDFSInvalidStart();
     }
 
     // =========================================================
@@ -671,6 +682,65 @@ public class AlgorithmTests {
                     + " but got " + Arrays.toString(actual));
         }
     }
+
+
+    // ==================== BFS Tests ====================
+
+private void testBFSNormal() {
+    BreadthFirstSearch<Integer> bfs = new BreadthFirstSearch<>();
+    Graph<Integer> g = buildConnectedTestGraph();
+    int[] order = bfs.traverse(g, 0);
+    this.assertArrayEquals(new int[]{0, 1, 2, 3}, order, "BFS traverse from 0 on connected graph");
+}
+
+private void testBFSDisconnected() {
+    BreadthFirstSearch<Integer> bfs = new BreadthFirstSearch<>();
+    Graph<Integer> g = buildDisconnectedTestGraph();
+    int[] order = bfs.traverse(g, 0);
+    this.assertEquals(4, order.length, "BFS should visit only reachable vertices in disconnected graph");
+    this.assertTrue(!bfs.isReachable(g, 0, 4), "BFS.isReachable should return false for isolated vertex");
+}
+
+private void testBFSInvalidStart() {
+    BreadthFirstSearch<Integer> bfs = new BreadthFirstSearch<>();
+    boolean threw = false;
+    try {
+        bfs.traverse(buildConnectedTestGraph(), 99);
+    } catch (IndexOutOfBoundsException e) {
+        threw = true;
+    }
+    this.assertTrue(threw, "BFS.traverse with invalid start index should throw IndexOutOfBoundsException");
+}
+
+// ==================== DFS Tests ====================
+
+private void testDFSNormal() {
+    DepthFirstSearch<Integer> dfs = new DepthFirstSearch<>();
+    Graph<Integer> g = buildConnectedTestGraph();
+    int[] order = dfs.traverse(g, 0);
+    this.assertArrayEquals(new int[]{0, 1, 2, 3}, order, "DFS traverse from 0 on connected graph");
+}
+
+private void testDFSDisconnected() {
+    DepthFirstSearch<Integer> dfs = new DepthFirstSearch<>();
+    Graph<Integer> g = buildDisconnectedTestGraph();
+    int[] order = dfs.traverse(g, 0);
+    this.assertEquals(4, order.length, "DFS should visit only reachable vertices in disconnected graph");
+    this.assertTrue(!dfs.isReachable(g, 0, 4), "DFS.isReachable should return false for isolated vertex");
+}
+
+private void testDFSInvalidStart() {
+    DepthFirstSearch<Integer> dfs = new DepthFirstSearch<>();
+    boolean threw = false;
+    try {
+        dfs.traverse(buildConnectedTestGraph(), -1);
+    } catch (IndexOutOfBoundsException e) {
+        threw = true;
+    }
+    this.assertTrue(threw, "DFS.traverse with invalid start index should throw IndexOutOfBoundsException");
+}
+
+
 
     // =========================================================
     // Main entry point
