@@ -12,6 +12,7 @@ import datastructures.Heap;
 import datastructures.PriorityQueue;
 import datastructures.Queue;
 import datastructures.RedBlackTree;
+import datastructures.Stack;
 
 public class DataStructureTests {
 
@@ -74,6 +75,11 @@ public class DataStructureTests {
         this.testDisjointSetGet();
         this.testDisjointSetExceptions();
         this.testDisjointSetUnsupportedOperations();
+
+        // --- Stack tests ---
+         testStackNormal();
+         testStackBoundary();
+         testStackInvalid();
 
         System.out.println("Data structure tests passed.");
     }
@@ -1224,7 +1230,53 @@ private void testPriorityQueueInvalid() {
 
 
 
+// ==================== Stack Tests ====================
 
+private void testStackNormal() {
+    Stack<Integer> stack = new Stack<>();
+    stack.push(10);
+    stack.push(20);
+    stack.push(30);
+
+    this.assertEquals(3, stack.size(), "Stack size after 3 pushes");
+    this.assertEquals(30, stack.peek(), "Stack peek should return the most recent item");
+    this.assertEquals(30, stack.pop(), "Stack pop should return LIFO order (30)");
+    this.assertEquals(20, stack.pop(), "Stack pop should return LIFO order (20)");
+    this.assertEquals(1, stack.size(), "Stack size after 2 pops");
+}
+
+private void testStackBoundary() {
+    Stack<Integer> stack = new Stack<>();
+    this.assertTrue(stack.isEmpty(), "Stack should start empty");
+
+    stack.push(99);
+    this.assertTrue(!stack.isEmpty(), "Stack should not be empty after push");
+    this.assertEquals(1, stack.size(), "Stack size after single push");
+    this.assertEquals(99, stack.peek(), "Stack peek should return the single item");
+    this.assertEquals(99, stack.pop(), "Stack pop should return the single item");
+
+    this.assertTrue(stack.isEmpty(), "Stack should be empty after popping its only item");
+}
+
+private void testStackInvalid() {
+    Stack<Integer> stack = new Stack<>();
+
+    boolean threwOnPop = false;
+    try {
+        stack.pop();
+    } catch (IllegalStateException e) {
+        threwOnPop = true;
+    }
+    this.assertTrue(threwOnPop, "pop() on empty Stack should throw IllegalStateException");
+
+    boolean threwOnPeek = false;
+    try {
+        stack.peek();
+    } catch (IllegalStateException e) {
+        threwOnPeek = true;
+    }
+    this.assertTrue(threwOnPeek, "peek() on empty Stack should throw IllegalStateException");
+}
 
     // ==================== Assertion Helpers ====================
 
