@@ -1,4 +1,4 @@
-﻿location_id,name,area,location_type,latitude,Longitude
+﻿location_id,name,area,location_type,latitude,longitude
 L001,Balme Library,Legon,Academic,5.651780749,-0.18706864
 L002,Great Hall,Legon,Academic,5.650623588,-0.196263288
 L003,College of Humanities,Legon,Academic,5.653839454,-0.182079061
