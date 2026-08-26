@@ -61,6 +61,8 @@ public class DataStructureTests {
         this.testPriorityQueueNormal();
         this.testPriorityQueueBoundary();
         this.testPriorityQueueInvalid();
+        this.testQueueWrappedGrowth();
+        this.testQueueWrappedRemoval();
         
         // --- DisjointSet ---
         this.testDisjointSetEmpty();
@@ -1016,28 +1018,87 @@ private void testQueueNormal() {
     this.assertEquals(1, q.size(), "remove(item) should remove matching element");
 }
 
+
+
 private void testQueueBoundary() {
     Queue<Integer> q = new Queue<>();
-    // DEFAULT_CAPACITY is 16; fill to capacity
-    for (int i = 0; i < 16; i++) {
-        q.add(i);
-    }
+    for (int i = 0; i < 16; i++) q.add(i);
     this.assertEquals(16, q.size(), "Queue size at capacity");
+    this.assertEquals(16, q.capacity(), "Queue capacity before growth");
 
-    boolean addThrew = false;
-    try {
-        q.add(99);
-    } catch (IllegalStateException e) {
-        addThrew = true;
-    }
-    this.assertTrue(addThrew, "Adding past capacity should throw IllegalStateException");
+    q.add(99); // should grow, not throw
+    this.assertEquals(17, q.size(), "Queue size after growth-triggering add");
+    this.assertEquals(32, q.capacity(), "Queue capacity should double on growth");
 
-    // Drain the queue
     for (int i = 0; i < 16; i++) {
-        q.dequeue();
+        this.assertEquals(i, q.dequeue(), "FIFO order preserved across resize, item " + i);
     }
-    this.assertTrue(q.isEmpty(), "Queue should be empty after draining");
+    this.assertEquals(99, q.dequeue(), "Last item dequeues correctly");
 }
+
+
+private void testQueueWrappedGrowth() {
+    Queue<Integer> queue = new Queue<>();
+
+    for (int i = 0; i < 12; i++) {
+        queue.add(i);
+    }
+
+    for (int i = 0; i < 8; i++) {
+        this.assertEquals(i, queue.dequeue(),
+                "Initial FIFO order before wraparound");
+    }
+
+    for (int i = 12; i < 24; i++) {
+        queue.add(i);
+    }
+
+    // The internal head and tail are wrapped here.
+    queue.add(99);
+
+    this.assertEquals(32, queue.capacity(),
+            "Queue should grow after wrapped storage becomes full");
+
+    for (int i = 8; i < 24; i++) {
+        this.assertEquals(i, queue.dequeue(),
+                "FIFO order after wrapped growth");
+    }
+
+    this.assertEquals(99, queue.dequeue(),
+            "Final item should remain after wrapped growth");
+
+    this.assertTrue(queue.isEmpty(),
+            "Queue should be empty after wrapped-growth test");
+}
+
+private void testQueueWrappedRemoval() {
+    Queue<Integer> queue = new Queue<>();
+
+    for (int i = 0; i < 10; i++) {
+        queue.add(i);
+    }
+
+    queue.dequeue();
+    queue.dequeue();
+
+    queue.add(10);
+    queue.add(11);
+
+    queue.remove(6);
+
+    this.assertEquals(9, queue.size(),
+        "Queue size after removing from wrapped storage");
+this.assertEquals(2, queue.get(0),
+        "Front item after wrapped removal");
+this.assertEquals(5, queue.get(3),
+        "Item before removed value");
+this.assertEquals(7, queue.get(4),
+        "Item after removed value");
+this.assertEquals(11, queue.get(8),
+        "Last item after wrapped removal");
+}
+
+
 
 private void testQueueInvalid() {
     Queue<Integer> q = new Queue<>();
