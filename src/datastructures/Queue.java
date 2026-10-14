@@ -4,7 +4,18 @@ import interfaces.DataStructure;
 
 /**
  * Custom queue implementation for FIFO operations.
- * Uses a circular array backing for efficient enqueue/dequeue operations.
+ *
+ * Uses a circular array backing for efficient enqueue/dequeue operations,
+ * and GROWS when full (doubling capacity, like DynamicArray/HashTable do)
+ * rather than rejecting further inserts.
+ *
+ * NOTE: this is deliberately different from CircularQueue, which models a
+ * genuinely FIXED-capacity buffer (round-robin dispatch slots, etc.) and is
+ * expected to reject inserts once full. Queue is the general-purpose,
+ * unbounded FIFO used by BFS and scheduling workflows, so it must not run
+ * out of room mid-traversal on a real dataset (e.g. a 65-location campus
+ * graph, which comfortably exceeds the old fixed capacity of 16).
+ *
  * @param <T> element type
  */
 public class Queue<T> implements DataStructure<T> {
@@ -26,6 +37,7 @@ public class Queue<T> implements DataStructure<T> {
 
     /**
      * Adds an item to the rear of the queue.
+     * Grows the backing buffer (doubling it) instead of throwing when full.
      */
     @Override
     public void add(T item) {
@@ -33,12 +45,27 @@ public class Queue<T> implements DataStructure<T> {
             throw new IllegalArgumentException("Null elements not allowed");
         }
         if (size == buffer.length) {
-            throw new IllegalStateException("Queue is full");
+            grow();
         }
 
         buffer[tail] = item;
         tail = (tail + 1) % buffer.length;
         size++;
+    }
+
+    /**
+     * Doubles the backing array and re-lays out existing elements starting
+     * at index 0, so head/tail bookkeeping stays simple after the resize.
+     */
+    @SuppressWarnings("unchecked")
+    private void grow() {
+        T[] bigger = (T[]) new Object[buffer.length * 2];
+        for (int i = 0; i < size; i++) {
+            bigger[i] = buffer[(head + i) % buffer.length];
+        }
+        buffer = bigger;
+        head = 0;
+        tail = size;
     }
 
     /**
@@ -124,5 +151,10 @@ public class Queue<T> implements DataStructure<T> {
             throw new IndexOutOfBoundsException("Index out of bounds: " + index);
         }
         buffer[(head + index) % buffer.length] = item;
+    }
+
+    /** @return current backing capacity (mainly useful for resize tests) */
+    public int capacity() {
+        return buffer.length;
     }
 }
