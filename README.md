@@ -14,7 +14,7 @@ Students, staff, and campus administrators need a unified system to request and 
 
 - Maintenance and service request tracking
 - Shuttle and route planning across campus
-- Medical\Emergence requests
+- Medical/Emergency requests
 - Scheduling of service requests and task assignments
 - Custom data structures instead of Java built-in collections
 - Algorithmic support for search, sorting, graph traversal, and optimization
@@ -31,7 +31,7 @@ The application is built as separate layers and packages so each team can work i
 - `models` define domain entities
 - `utils` supply shared helpers and constants
 - `exceptions` define domain-specific error handling
-- `tests` hold test scaffolding for each module
+- `src/tests` hold test scaffolding for each module
 
 ---
 
@@ -51,6 +51,12 @@ src/
 ├── utils
 ├── exceptions
 └── tests
+
+data/
+docs/
+results/
+lib/
+tests/        ← placeholder only (actual tests are in src/tests)
 ```
 
 ### Packages and responsibilities
@@ -65,7 +71,7 @@ src/
 - `interfaces`: Defines common contracts for services, data structures, repositories, and algorithms.
 - `utils`: Utility classes, configuration constants, validation helpers, and timing tools.
 - `exceptions`: Custom exception types for controlled error handling.
-- `tests`: Placeholder test classes and unit test scaffolding.
+- `tests`: Unit test classes and test scaffolding for each module. Located under `src/tests`.
 
 ---
 
@@ -490,10 +496,37 @@ src/
 #### PerformanceTimer
 
 - Measures algorithm and service execution performance.
+- Tracks elapsed time in milliseconds and approximate memory usage per run.
 
 #### Constants
 
 - Stores application-wide constants and configuration keys.
+
+#### PerformanceLabRunner
+
+- Runs timed empirical experiments for search and sort algorithms.
+- Outputs results to `results/algorithm_runs.csv`.
+
+#### GraphPerformanceLabRunner
+
+- Runs timed empirical experiments for graph algorithms (BFS, DFS, Dijkstra, Prim, Kruskal).
+- Outputs results to `results/graph_algorithm_runs.csv`.
+
+#### HashTablePerformanceLabRunner
+
+- Runs timed empirical experiments for hash table insert, search, and delete operations.
+- Outputs results to `results/hashtable_runs.csv`.
+
+#### HeapPerformanceLabRunner
+
+- Runs timed empirical experiments for heap insert and extract operations.
+- Outputs results to `results/heap_runs.csv`.
+
+#### TreeComparisonLabRunner
+
+- Compares `BinarySearchTree` vs balanced tree (`RedBlackTree`) performance under random and sorted insertion orders.
+- Tracks resulting tree height alongside timing to highlight worst-case BST behaviour.
+- Outputs results to `results/tree_comparison_runs.csv`.
 
 ---
 
@@ -560,7 +593,7 @@ Database
 | `interfaces`     | none                                                                                      | Contracts and shared types            |
 | `utils`          | none                                                                                      | Shared helpers and constants          |
 | `exceptions`     | none                                                                                      | Custom error types                    |
-| `tests`          | all packages                                                                              | Validation and unit tests             |
+| `tests`          | all packages                                                                              | Located in `src/tests` — validation and unit tests |
 
 ---
 
@@ -641,4 +674,4 @@ Database
 - Respect the assessed requirement: do not use built-in Java collections for core data structure implementations.
 - Keep modules decoupled and follow package responsibilities.
 - If you need to add a new shared utility, add it under `utils` with documentation.
-- Use `tests` to scaffold unit testing for your package.
+- Use `src/tests` to scaffold unit testing for your package.
